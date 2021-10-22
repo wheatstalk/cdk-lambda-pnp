@@ -11,7 +11,9 @@ const code = PnpCode.fromWorkspace('lambda', {
   // Provide an optional yarn project directory. The default is the
   // process's current working directory.
   cwd: optionalYarnProjectDir,
-  // Runs 'yarn workspace lambda build'. The default is not to build.
+  // Optionally run 'yarn install'.
+  runInstall: true,
+  // Optionally run 'yarn workspace lambda build'.
   runBuild: true,
 });
 

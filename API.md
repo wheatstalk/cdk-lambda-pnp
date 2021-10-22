@@ -39,6 +39,19 @@ Use 'yarn workspace ${name} build' to build your code.
 
 ---
 
+##### `runInstall`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions.property.runInstall"></a>
+
+```typescript
+public readonly runInstall: boolean;
+```
+
+- *Type:* `boolean`
+- *Default:* does not run yarn install
+
+Use 'yarn install' to install dependencies.
+
+---
+
 ## Classes <a name="Classes"></a>
 
 ### PnpCode <a name="@wheatstalk/cdk-lambda-pnp.PnpCode"></a>
