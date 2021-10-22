@@ -10,13 +10,15 @@ test('creating a function', () => {
   const cwd = path.join(__dirname, '..', 'test-app');
   execa.sync('yarn', ['install'], { cwd });
 
+  const code = PnpCode.fromWorkspace('lambda', {
+    cwd,
+    runBuild: true,
+  });
+
   new lambda.Function(stack, 'Handler', {
     runtime: lambda.Runtime.NODEJS_14_X,
     handler: 'bundle/packages/lambda/dist/handler.handler',
-    code: PnpCode.fromWorkspace('lambda', {
-      cwd,
-      runBuild: true,
-    }),
+    code: code,
   });
 });
 
