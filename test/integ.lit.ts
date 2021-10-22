@@ -10,21 +10,24 @@ export class IntegLit extends cdk.Stack {
     super(scope_, id, props);
 
     const scope = this;
-    const optionalYarnPackageDir = path.join(__dirname, '..', 'test-app');
+    const optionalYarnProjectDir = path.join(__dirname, '..', 'test-app');
 
     // ::SNIP
+    // Build and bundle your code from a yarn workspace, including only the
+    // needed dependencies.
+    const code = PnpCode.fromWorkspace('lambda', {
+      // Provide an optional yarn project directory. The default is the
+      // process's current working directory.
+      cwd: optionalYarnProjectDir,
+      // Runs 'yarn workspace lambda build'. The default is not to build.
+      runBuild: true,
+    });
+
+    // Add the code to your function
     const handler = new lambda.Function(scope, 'Handler', {
       runtime: lambda.Runtime.NODEJS_14_X,
-      // Build your code from a yarn workspace.
-      code: PnpCode.fromWorkspace('lambda', {
-        // Provide an optional yarn package directory. The default is
-        // the process's current working directory.
-        cwd: optionalYarnPackageDir,
-        // Runs 'yarn workspace lambda build'
-        runBuild: true,
-      }),
-      // Path to your handler. Yarn.build puts your project structure under
-      // the bundle/ subdirectory.
+      code: code,
+      // The bundler puts your project in the asset's bundle/ directory.
       handler: 'bundle/packages/lambda/dist/handler.handler',
       environment: {
         // Ensures that the pnp runtime is loaded every time.
@@ -32,6 +35,7 @@ export class IntegLit extends cdk.Stack {
       },
     });
 
+    // Use your function in an API, for example
     const httpApi = new apigatewayv2.HttpApi(scope, 'HttpApi', {
       defaultIntegration: new apigatewayv2_integrations.LambdaProxyIntegration({
         handler,
