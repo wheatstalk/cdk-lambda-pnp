@@ -68,8 +68,6 @@ const project = new pj.AwsCdkConstructLibrary({
   // release: undefined,              /* Add release management to this project. */
 });
 
-project.gitattributes.addAttributes('*.zip', 'filter=lfs', 'diff=lfs', 'merge=lfs -text');
-
 project.npmignore.addPatterns('/test-app');
 
 const ignores = [
