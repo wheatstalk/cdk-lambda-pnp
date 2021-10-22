@@ -15,16 +15,25 @@ export abstract class PnpCode {
     const cwd = options.cwd ?? process.cwd();
     const build = options.runBuild ?? false;
 
-    const execaOptions = {
+    const execaBaseOptions: execa.SyncOptions = {
       cwd,
+      env: {
+        CI: '1',
+      },
     };
 
-    const versionRes = execa.sync('yarn', ['--version'], execaOptions);
+    const execaBuildOptions: execa.SyncOptions = {
+      ...execaBaseOptions,
+      stdout: process.stdout,
+      stderr: process.stderr,
+    };
+
+    const versionRes = execa.sync('yarn', ['--version'], execaBaseOptions);
     if (!/^[23]/.test(versionRes.stdout)) {
       throw new Error(`Unsupported Yarn version ${versionRes.stdout} - use Yarn 2 or 3`);
     }
 
-    const pluginRuntimeRes = execa.sync('yarn', ['plugin', 'runtime', '--json'], execaOptions);
+    const pluginRuntimeRes = execa.sync('yarn', ['plugin', 'runtime', '--json'], execaBaseOptions);
     if (!/@ojkelly\/plugin-build/.test(pluginRuntimeRes.stdout)) {
       throw new Error('No supported yarn plugins detected - you could run `yarn plugin import https://yarn.build/latest`');
     }
@@ -33,10 +42,10 @@ export abstract class PnpCode {
     const bundleFile = 'bundle.zip';
 
     if (build) {
-      execa.sync('yarn', ['workspace', name, 'build'], execaOptions);
+      execa.sync('yarn', ['workspace', name, 'build'], execaBuildOptions);
     }
 
-    execa.sync('yarn', ['workspace', name, 'bundle', '--output-directory', outputDir, '--archive-name', bundleFile], execaOptions);
+    execa.sync('yarn', ['workspace', name, 'bundle', '--output-directory', outputDir, '--archive-name', bundleFile], execaBuildOptions);
 
     return lambda.Code.fromAsset(path.join(outputDir, bundleFile));
   }
