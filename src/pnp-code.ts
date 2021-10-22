@@ -28,6 +28,12 @@ export interface PnpCodeFromWorkspaceOptions {
   readonly cwd?: string;
 
   /**
+   * Use 'yarn install' to install dependencies.
+   * @default - does not run yarn install
+   */
+  readonly runInstall?: boolean;
+
+  /**
    * Use 'yarn workspace ${name} build' to build your code
    * @default - does not build the code
    */
@@ -49,7 +55,8 @@ class PnpCodeFromWorkspace extends lambda.Code {
     super();
 
     const cwd = options.cwd ?? process.cwd();
-    const build = options.runBuild ?? false;
+    const runInstall = options.runInstall ?? false;
+    const runBuild = options.runBuild ?? false;
 
     const execaBaseOptions: execa.SyncOptions = {
       cwd,
@@ -76,7 +83,11 @@ class PnpCodeFromWorkspace extends lambda.Code {
       stderr: process.stderr,
     };
 
-    if (build) {
+    if (runInstall) {
+      execa.sync('yarn', ['install'], execaBuildOptions);
+    }
+
+    if (runBuild) {
       execa.sync('yarn', ['workspace', options.name, 'build'], execaBuildOptions);
     }
 
