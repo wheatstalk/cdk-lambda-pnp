@@ -27,7 +27,7 @@ export class IntegLit extends cdk.Stack {
     const handler = new lambda.Function(scope, 'Handler', {
       runtime: lambda.Runtime.NODEJS_14_X,
       code: code,
-      // Yarn.build puts your project structure under the bundle/ subdirectory.
+      // The bundler puts your project in the asset's bundle/ directory.
       handler: 'bundle/packages/lambda/dist/handler.handler',
       environment: {
         // Ensures that the pnp runtime is loaded every time.
@@ -35,7 +35,7 @@ export class IntegLit extends cdk.Stack {
       },
     });
 
-    // Use it your function, for example, in an API
+    // Use your function in an API, for example
     const httpApi = new apigatewayv2.HttpApi(scope, 'HttpApi', {
       defaultIntegration: new apigatewayv2_integrations.LambdaProxyIntegration({
         handler,
