@@ -3,7 +3,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
 import { PnpCode } from '../src';
 
-test('creating a function', () => {
+test('bundling code', () => {
   const stack = new cdk.Stack();
 
   const code = PnpCode.fromWorkspace('lambda', {

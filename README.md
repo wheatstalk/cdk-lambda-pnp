@@ -5,28 +5,22 @@ This CDK library allows you to build and bundle your AWS Lambda functions from a
 ## Usage
 <!-- <macro exec="lit-snip ./test/integ.lit.ts"> -->
 ```ts
-// Build and bundle your code from a yarn workspace, including only the
+// Create a lambda function from a yarn workspace, including only the
 // needed dependencies.
-const code = PnpCode.fromWorkspace('lambda', {
-  // Provide an optional yarn project directory. The default is the
-  // process's current working directory.
-  cwd: optionalYarnProjectDir,
+const handler = new PnpWorkspaceFunction(scope, 'Handler', {
+  // Specify the yarn workspace package name
+  workspace: 'lambda',
+  // Specify the workspace-relative file containing the lambda handler
+  handler: 'dist/api.handler',
   // Optionally run 'yarn install'.
   runInstall: true,
   // Optionally run 'yarn workspace lambda build'.
   runBuild: true,
-});
 
-// Add the code to your function
-const handler = new lambda.Function(scope, 'Handler', {
-  runtime: lambda.Runtime.NODEJS_14_X,
-  code: code,
-  // The bundler puts your project in the asset's bundle/ directory.
-  handler: 'bundle/packages/lambda/dist/handler.handler',
-  environment: {
-    // Ensures that the pnp runtime is loaded every time.
-    NODE_OPTIONS: '--require bundle/.pnp.cjs',
-  },
+  // Provide an optional yarn project directory. Useful in case you're
+  // building a lambda from outside of a yarn pnp environment. By
+  // default, we use the process's current working directory.
+  cwd: optionalYarnProjectDir,
 });
 
 // Use your function in an API, for example

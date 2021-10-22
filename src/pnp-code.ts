@@ -22,7 +22,7 @@ export abstract class PnpCode {
 
 export interface PnpCodeFromWorkspaceOptions {
   /**
-   * Path to any directory within your yarn project.
+   * Path to any directory within a yarn project.
    * @default - the CDK app's CWD
    */
   readonly cwd?: string;
