@@ -22,12 +22,6 @@ export abstract class PnpCode {
       },
     };
 
-    const execaBuildOptions: execa.SyncOptions = {
-      ...execaBaseOptions,
-      stdout: process.stdout,
-      stderr: process.stderr,
-    };
-
     const versionRes = execa.sync('yarn', ['--version'], execaBaseOptions);
     if (!/^[23]/.test(versionRes.stdout)) {
       throw new Error(`Unsupported Yarn version ${versionRes.stdout} - use Yarn 2 or 3`);
@@ -40,6 +34,12 @@ export abstract class PnpCode {
 
     const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pnpcode'));
     const bundleFile = 'bundle.zip';
+    const execaBuildOptions: execa.SyncOptions = {
+      ...execaBaseOptions,
+      // Show the build output
+      stdout: process.stdout,
+      stderr: process.stderr,
+    };
 
     if (build) {
       execa.sync('yarn', ['workspace', name, 'build'], execaBuildOptions);
