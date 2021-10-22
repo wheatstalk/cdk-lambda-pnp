@@ -1,8 +1,9 @@
 {
-  "name": "cdk-lambda-pnp",
+  "name": "@wheatstalk/cdk-lambda-pnp",
+  "description": "Use yarn.build to build and bundle your AWS Lambda functions",
   "repository": {
     "type": "git",
-    "url": "https://github.com/joshkellendonk/cdk-lambda-pnp.git"
+    "url": "https://github.com/wheatstalk/cdk-lambda-pnp.git"
   },
   "scripts": {
     "clobber": "npx projen clobber",
@@ -21,10 +22,11 @@
     "compat": "npx projen compat",
     "publish:npm": "npx projen publish:npm",
     "docgen": "npx projen docgen",
+    "readme-macros": "npx projen readme-macros",
     "release": "npx projen release",
     "upgrade": "npx projen upgrade",
-    "upgrade-projen": "npx projen upgrade-projen",
-    "projen": "npx projen"
+    "projen": "npx projen",
+    "integ:lit": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.lit.ts\""
   },
   "author": {
     "name": "Josh Kellendonk",
@@ -33,10 +35,17 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.95.2",
+    "@aws-cdk/aws-apigatewayv2": "^1.95.2",
+    "@aws-cdk/aws-apigatewayv2-integrations": "^1.95.2",
+    "@aws-cdk/aws-lambda": "^1.95.2",
+    "@aws-cdk/core": "^1.95.2",
+    "@types/execa": "^2.0.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^14.17.0",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
+    "@wheatstalk/lit-snip": "^0.0",
+    "aws-cdk": "^1.129.0",
     "eslint": "^8.0.1",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-import-resolver-typescript": "^2.5.0",
@@ -48,21 +57,39 @@
     "jsii-docgen": "^3.8.2",
     "jsii-pacmak": "^1.40.0",
     "json-schema": "^0.3.0",
+    "markmac": "^0.1",
     "npm-check-updates": "^11",
     "projen": "^0.31.7",
+    "shx": "^0.3.3",
     "standard-version": "^9",
     "ts-jest": "^27.0.7",
+    "ts-node": "^10.3.1",
     "typescript": "^4.4.4"
   },
   "peerDependencies": {
+    "@aws-cdk/aws-lambda": "^1.95.2",
+    "@aws-cdk/core": "^1.95.2",
     "constructs": "^3.2.27"
   },
-  "bundledDependencies": [],
+  "dependencies": {
+    "execa": "^5.1.1"
+  },
+  "bundledDependencies": [
+    "execa"
+  ],
   "keywords": [
-    "cdk"
+    "bundling",
+    "cdk",
+    "lambda",
+    "pnp",
+    "yarn",
+    "yarn.build"
   ],
   "main": "lib/index.js",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
   "jest": {
     "testMatch": [
