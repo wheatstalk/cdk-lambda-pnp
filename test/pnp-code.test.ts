@@ -11,6 +11,7 @@ test('creating a function', () => {
     handler: 'bundle/packages/lambda/dist/handler.handler',
     code: PnpCode.fromWorkspace('lambda', {
       cwd: path.join(__dirname, '..', 'test-app'),
+      runBuild: true,
     }),
   });
 });
