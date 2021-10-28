@@ -713,23 +713,51 @@ new PnpCode()
 
 #### Static Functions <a name="Static Functions"></a>
 
-##### `fromWorkspace` <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.fromWorkspace"></a>
+##### `fromDockerBuild` <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.fromDockerBuild"></a>
 
 ```typescript
 import { PnpCode } from '@wheatstalk/cdk-lambda-pnp'
 
-PnpCode.fromWorkspace(name: string, options?: PnpCodeFromWorkspaceOptions)
+PnpCode.fromDockerBuild(workspace: string, options?: PnpCodeFromWorkspaceOptions)
 ```
 
-###### `name`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.name"></a>
+###### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.workspace"></a>
 
 - *Type:* `string`
+
+The yarn workspace.
 
 ---
 
 ###### `options`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.options"></a>
 
 - *Type:* [`@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions`](#@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions)
+
+Bundling options.
+
+---
+
+##### `fromYarnBuild` <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.fromYarnBuild"></a>
+
+```typescript
+import { PnpCode } from '@wheatstalk/cdk-lambda-pnp'
+
+PnpCode.fromYarnBuild(workspace: string, options?: PnpCodeFromWorkspaceOptions)
+```
+
+###### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.workspace"></a>
+
+- *Type:* `string`
+
+The yarn workspace.
+
+---
+
+###### `options`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.options"></a>
+
+- *Type:* [`@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions`](#@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions)
+
+Bundling options.
 
 ---
 

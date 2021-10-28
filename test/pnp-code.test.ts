@@ -6,7 +6,7 @@ import { PnpCode } from '../src';
 test('bundling code', () => {
   const stack = new cdk.Stack();
 
-  const code = PnpCode.fromWorkspace('lambda', {
+  const code = PnpCode.fromYarnBuild('lambda', {
     cwd: path.join(__dirname, '..', 'test-app'),
     runInstall: true,
     runBuild: true,

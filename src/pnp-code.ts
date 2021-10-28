@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
@@ -10,11 +11,25 @@ import * as execa from 'execa';
  */
 export abstract class PnpCode {
   /**
-   * Create lambda code from the given yarn workspace.
+   * Create lambda code with yarn.build.
+   * @param workspace The yarn workspace
+   * @param options Bundling options
    */
-  static fromWorkspace(name: string, options: PnpCodeFromWorkspaceOptions = {}): lambda.Code {
-    return new PnpCodeFromWorkspace({
-      name,
+  static fromYarnBuild(workspace: string, options: PnpCodeFromWorkspaceOptions = {}): lambda.Code {
+    return new PnpCodeFromYarnBundleWorkspace({
+      workspace,
+      ...options,
+    });
+  }
+
+  /**
+   * Create lambda code with cdk-lambda-pnp's Dockerfile
+   * @param workspace The yarn workspace
+   * @param options Bundling options
+   */
+  static fromDockerBuild(workspace: string, options: PnpCodeFromWorkspaceOptions = {}): lambda.Code {
+    return new PnpCodeFromDocker({
+      workspace,
       ...options,
     });
   }
@@ -40,18 +55,18 @@ export interface PnpCodeFromWorkspaceOptions {
   readonly runBuild?: boolean;
 }
 
-interface PnpCodeFromWorkspaceProps extends PnpCodeFromWorkspaceOptions {
+interface PnpCodeFromYarnBundleWorkspaceProps extends PnpCodeFromWorkspaceOptions {
   /**
    * Name of the workspace.
    */
-  readonly name: string;
+  readonly workspace: string;
 }
 
-class PnpCodeFromWorkspace extends lambda.Code {
+class PnpCodeFromYarnBundleWorkspace extends lambda.Code {
   readonly isInline = false;
   private readonly code: lambda.Code;
 
-  constructor(options: PnpCodeFromWorkspaceProps) {
+  constructor(options: PnpCodeFromYarnBundleWorkspaceProps) {
     super();
 
     const cwd = options.cwd ?? process.cwd();
@@ -88,10 +103,10 @@ class PnpCodeFromWorkspace extends lambda.Code {
     }
 
     if (runBuild) {
-      execa.sync('yarn', ['workspace', options.name, 'build'], execaBuildOptions);
+      execa.sync('yarn', ['workspace', options.workspace, 'build'], execaBuildOptions);
     }
 
-    execa.sync('yarn', ['workspace', options.name, 'bundle', '--output-directory', outputDir, '--archive-name', bundleFile], execaBuildOptions);
+    execa.sync('yarn', ['workspace', options.workspace, 'bundle', '--output-directory', outputDir, '--archive-name', bundleFile], execaBuildOptions);
 
     this.code = lambda.Code.fromAsset(path.join(outputDir, bundleFile));
   }
@@ -100,3 +115,48 @@ class PnpCodeFromWorkspace extends lambda.Code {
     return this.code.bind(scope);
   }
 }
+
+interface PnpCodeFromDockerOptions extends PnpCodeFromWorkspaceOptions {
+  readonly workspace: string;
+}
+
+class PnpCodeFromDocker extends lambda.Code {
+  readonly isInline = false;
+  private readonly code: lambda.Code;
+
+  constructor(options: PnpCodeFromDockerOptions) {
+    super();
+
+    const cwd = options.cwd ?? process.cwd();
+    const runInstall = options.runInstall ?? false;
+    const runBuild = options.runBuild ?? false;
+
+    if (runInstall) {
+      execa.sync('yarn', ['install'], { cwd });
+    }
+
+    if (runBuild) {
+      execa.sync('yarn', ['workspace', options.workspace, 'build'], { cwd });
+    }
+
+    const unique = crypto.randomBytes(10).toString('hex');
+    const localDockerfilePath = path.join(cwd, `pnp.Dockerfile${unique}`);
+    fs.copyFileSync(PNP_DOCKERFILE_PATH, localDockerfilePath);
+    try {
+      this.code = lambda.Code.fromDockerBuild(cwd, {
+        file: path.relative(cwd, PNP_DOCKERFILE_PATH),
+        buildArgs: {
+          WORKSPACE: options.workspace,
+        },
+      });
+    } finally {
+      fs.rmSync(localDockerfilePath);
+    }
+  }
+
+  bind(scope: cdk.Construct): lambda.CodeConfig {
+    return this.code.bind(scope);
+  }
+}
+
+const PNP_DOCKERFILE_PATH = path.join(__dirname, '..', 'files', 'pnp.Dockerfile');

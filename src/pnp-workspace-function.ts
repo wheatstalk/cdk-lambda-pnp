@@ -24,22 +24,30 @@ export class PnpWorkspaceFunction extends lambda.Function {
       workspace: props.workspace,
       cwd: props.cwd,
     });
-    const handler = `bundle/${workspaceRoot}/${props.handler}`;
 
-    const code = PnpCode.fromWorkspace(props.workspace, props);
+    const config: PnpWorkspaceFunctionCodeConfig = {
+      bundlingPrefix: '',
+      code: PnpCode.fromDockerBuild(props.workspace, props),
+    };
+
     const environment = {
       ...(props.environment ?? {}),
-      NODE_OPTIONS: '--require bundle/.pnp.cjs',
+      NODE_OPTIONS: `--require ${(config.bundlingPrefix)}.pnp.cjs`,
     };
 
     super(scope, id, {
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
-      code,
-      handler,
+      code: config.code,
+      handler: `${config.bundlingPrefix}${workspaceRoot}/${props.handler}`,
       environment,
     });
   }
+}
+
+interface PnpWorkspaceFunctionCodeConfig {
+  readonly bundlingPrefix: string;
+  readonly code: lambda.Code;
 }
 
 /** @internal */
