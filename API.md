@@ -38,52 +38,43 @@ new PnpWorkspaceFunction(scope: Construct, id: string, props: PnpWorkspaceFuncti
 
 ## Structs <a name="Structs"></a>
 
-### PnpCodeFromWorkspaceOptions <a name="@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions"></a>
+### PnpWorkspaceFunctionCodeConfig <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
 
 ```typescript
-import { PnpCodeFromWorkspaceOptions } from '@wheatstalk/cdk-lambda-pnp'
+import { PnpWorkspaceFunctionCodeConfig } from '@wheatstalk/cdk-lambda-pnp'
 
-const pnpCodeFromWorkspaceOptions: PnpCodeFromWorkspaceOptions = { ... }
+const pnpWorkspaceFunctionCodeConfig: PnpWorkspaceFunctionCodeConfig = { ... }
 ```
 
-##### `cwd`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions.property.cwd"></a>
+##### `assetPathPrefix`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig.property.assetPathPrefix"></a>
 
 ```typescript
-public readonly cwd: string;
+public readonly assetPathPrefix: string;
 ```
 
 - *Type:* `string`
-- *Default:* the CDK app's CWD
-
-Path to any directory within a yarn project.
 
 ---
 
-##### `runBuild`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions.property.runBuild"></a>
+##### `code`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig.property.code"></a>
 
 ```typescript
-public readonly runBuild: boolean;
+public readonly code: Code;
 ```
 
-- *Type:* `boolean`
-- *Default:* does not build the code
-
-Use 'yarn workspace ${name} build' to build your code.
+- *Type:* [`@aws-cdk/aws-lambda.Code`](#@aws-cdk/aws-lambda.Code)
 
 ---
 
-##### `runInstall`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions.property.runInstall"></a>
+##### `pnpRuntimePath`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig.property.pnpRuntimePath"></a>
 
 ```typescript
-public readonly runInstall: boolean;
+public readonly pnpRuntimePath: string;
 ```
 
-- *Type:* `boolean`
-- *Default:* does not run yarn install
-
-Use 'yarn install' to install dependencies.
+- *Type:* `string`
 
 ---
 
@@ -633,45 +624,6 @@ requires a NAT gateway, so picking Public subnets is not allowed.
 
 ---
 
-##### `cwd`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.cwd"></a>
-
-```typescript
-public readonly cwd: string;
-```
-
-- *Type:* `string`
-- *Default:* the CDK app's CWD
-
-Path to any directory within a yarn project.
-
----
-
-##### `runBuild`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.runBuild"></a>
-
-```typescript
-public readonly runBuild: boolean;
-```
-
-- *Type:* `boolean`
-- *Default:* does not build the code
-
-Use 'yarn workspace ${name} build' to build your code.
-
----
-
-##### `runInstall`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.runInstall"></a>
-
-```typescript
-public readonly runInstall: boolean;
-```
-
-- *Type:* `boolean`
-- *Default:* does not run yarn install
-
-Use 'yarn install' to install dependencies.
-
----
-
 ##### `handler`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.handler"></a>
 
 ```typescript
@@ -680,7 +632,7 @@ public readonly handler: string;
 
 - *Type:* `string`
 
-Name of the lambda handler, relative to the workspace's root.
+Name of the lambda handler, relative to the workspace.
 
 ---
 
@@ -696,7 +648,178 @@ Name of the workspace.
 
 ---
 
+##### `bundler`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.bundler"></a>
+
+```typescript
+public readonly bundler: PnpBundler;
+```
+
+- *Type:* [`@wheatstalk/cdk-lambda-pnp.PnpBundler`](#@wheatstalk/cdk-lambda-pnp.PnpBundler)
+- *Default:* use PnpBundler.fromWorkspaceFocus()
+
+The bundler.
+
+---
+
+### WorkspaceFocusBundlerOptions <a name="@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { WorkspaceFocusBundlerOptions } from '@wheatstalk/cdk-lambda-pnp'
+
+const workspaceFocusBundlerOptions: WorkspaceFocusBundlerOptions = { ... }
+```
+
+##### `projectPath`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions.property.projectPath"></a>
+
+```typescript
+public readonly projectPath: string;
+```
+
+- *Type:* `string`
+
+---
+
+### YarnBuildBundlerOptions <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { YarnBuildBundlerOptions } from '@wheatstalk/cdk-lambda-pnp'
+
+const yarnBuildBundlerOptions: YarnBuildBundlerOptions = { ... }
+```
+
+##### `runBuild`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions.property.runBuild"></a>
+
+```typescript
+public readonly runBuild: boolean;
+```
+
+- *Type:* `boolean`
+- *Default:* does not build the code
+
+Use 'yarn workspace ${name} build' to build your code.
+
+---
+
+##### `runInstall`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions.property.runInstall"></a>
+
+```typescript
+public readonly runInstall: boolean;
+```
+
+- *Type:* `boolean`
+- *Default:* does not run yarn install
+
+Use 'yarn install' to install dependencies.
+
+---
+
+##### `projectPath`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions.property.projectPath"></a>
+
+```typescript
+public readonly projectPath: string;
+```
+
+- *Type:* `string`
+
+---
+
+### YarnBuildOptions <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildOptions"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { YarnBuildOptions } from '@wheatstalk/cdk-lambda-pnp'
+
+const yarnBuildOptions: YarnBuildOptions = { ... }
+```
+
+##### `runBuild`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildOptions.property.runBuild"></a>
+
+```typescript
+public readonly runBuild: boolean;
+```
+
+- *Type:* `boolean`
+- *Default:* does not build the code
+
+Use 'yarn workspace ${name} build' to build your code.
+
+---
+
+##### `runInstall`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildOptions.property.runInstall"></a>
+
+```typescript
+public readonly runInstall: boolean;
+```
+
+- *Type:* `boolean`
+- *Default:* does not run yarn install
+
+Use 'yarn install' to install dependencies.
+
+---
+
 ## Classes <a name="Classes"></a>
+
+### PnpBundler <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler"></a>
+
+#### Initializers <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.Initializer"></a>
+
+```typescript
+import { PnpBundler } from '@wheatstalk/cdk-lambda-pnp'
+
+new PnpBundler()
+```
+
+#### Methods <a name="Methods"></a>
+
+##### `bundle` <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.bundle"></a>
+
+```typescript
+public bundle(workspace: string)
+```
+
+###### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.parameter.workspace"></a>
+
+- *Type:* `string`
+
+---
+
+#### Static Functions <a name="Static Functions"></a>
+
+##### `fromWorkspaceFocus` <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.fromWorkspaceFocus"></a>
+
+```typescript
+import { PnpBundler } from '@wheatstalk/cdk-lambda-pnp'
+
+PnpBundler.fromWorkspaceFocus(options?: WorkspaceFocusBundlerOptions)
+```
+
+###### `options`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.parameter.options"></a>
+
+- *Type:* [`@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions`](#@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions)
+
+---
+
+##### `fromYarnBuild` <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.fromYarnBuild"></a>
+
+```typescript
+import { PnpBundler } from '@wheatstalk/cdk-lambda-pnp'
+
+PnpBundler.fromYarnBuild(options?: YarnBuildBundlerOptions)
+```
+
+###### `options`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.parameter.options"></a>
+
+- *Type:* [`@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions`](#@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions)
+
+---
+
+
 
 ### PnpCode <a name="@wheatstalk/cdk-lambda-pnp.PnpCode"></a>
 
@@ -713,15 +836,41 @@ new PnpCode()
 
 #### Static Functions <a name="Static Functions"></a>
 
-##### `fromWorkspace` <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.fromWorkspace"></a>
+##### `fromWorkspaceFocus` <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.fromWorkspaceFocus"></a>
 
 ```typescript
 import { PnpCode } from '@wheatstalk/cdk-lambda-pnp'
 
-PnpCode.fromWorkspace(name: string, options?: PnpCodeFromWorkspaceOptions)
+PnpCode.fromWorkspaceFocus(projectRoot: string, workspace: string)
 ```
 
-###### `name`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.name"></a>
+###### `projectRoot`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.projectRoot"></a>
+
+- *Type:* `string`
+
+---
+
+###### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.workspace"></a>
+
+- *Type:* `string`
+
+---
+
+##### `fromYarnBuild` <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.fromYarnBuild"></a>
+
+```typescript
+import { PnpCode } from '@wheatstalk/cdk-lambda-pnp'
+
+PnpCode.fromYarnBuild(projectRoot: string, workspace: string, options?: YarnBuildOptions)
+```
+
+###### `projectRoot`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.projectRoot"></a>
+
+- *Type:* `string`
+
+---
+
+###### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.workspace"></a>
 
 - *Type:* `string`
 
@@ -729,7 +878,7 @@ PnpCode.fromWorkspace(name: string, options?: PnpCodeFromWorkspaceOptions)
 
 ###### `options`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.options"></a>
 
-- *Type:* [`@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions`](#@wheatstalk/cdk-lambda-pnp.PnpCodeFromWorkspaceOptions)
+- *Type:* [`@wheatstalk/cdk-lambda-pnp.YarnBuildOptions`](#@wheatstalk/cdk-lambda-pnp.YarnBuildOptions)
 
 ---
 

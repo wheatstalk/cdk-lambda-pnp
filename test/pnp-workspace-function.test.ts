@@ -1,11 +1,11 @@
 import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
-import { getWorkspaceRoot, PnpWorkspaceFunction } from '../src';
+import { getWorkspacePath, PnpBundler, PnpWorkspaceFunction } from '../src';
 
 test('get workspace path', () => {
   const workspace = 'lambda';
 
-  const workspaceRoot = getWorkspaceRoot({
+  const workspaceRoot = getWorkspacePath({
     workspace,
     cwd: TEST_APP_PATH,
   });
@@ -19,9 +19,11 @@ test('creating a function', () => {
   new PnpWorkspaceFunction(stack, 'Handler', {
     workspace: 'lambda',
     handler: 'dist/handler.handler',
-    cwd: TEST_APP_PATH,
-    runInstall: true,
-    runBuild: true,
+    bundler: PnpBundler.fromYarnBuild({
+      projectPath: TEST_APP_PATH,
+      runInstall: true,
+      runBuild: true,
+    }),
   });
 });
 

@@ -40,6 +40,9 @@
     "@aws-cdk/aws-lambda": "^1.95.2",
     "@aws-cdk/core": "^1.95.2",
     "@types/execa": "^2.0.0",
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^7.2.0",
+    "@types/ignore-walk": "^4.0.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^14.17.0",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
@@ -72,10 +75,16 @@
     "constructs": "^3.2.27"
   },
   "dependencies": {
-    "execa": "^5.1.1"
+    "execa": "^5.1.1",
+    "fs-extra": "^10.0.0",
+    "globby": "^11.0.4",
+    "ignore-walk": "^4.0.1"
   },
   "bundledDependencies": [
-    "execa"
+    "execa",
+    "fs-extra",
+    "globby",
+    "ignore-walk"
   ],
   "keywords": [
     "bundling",

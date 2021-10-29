@@ -30,6 +30,18 @@
       "type": "build"
     },
     {
+      "name": "@types/fs-extra",
+      "type": "build"
+    },
+    {
+      "name": "@types/glob",
+      "type": "build"
+    },
+    {
+      "name": "@types/ignore-walk",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "type": "build"
     },
@@ -137,6 +149,19 @@
     },
     {
       "name": "execa",
+      "type": "bundled"
+    },
+    {
+      "name": "fs-extra",
+      "type": "bundled"
+    },
+    {
+      "name": "globby",
+      "version": "^11.0.4",
+      "type": "bundled"
+    },
+    {
+      "name": "ignore-walk",
       "type": "bundled"
     },
     {
