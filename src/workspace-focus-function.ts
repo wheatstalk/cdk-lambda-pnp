@@ -1,7 +1,7 @@
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
 import { PnpCode } from './pnp-code';
-import { getWorkspacePath } from './pnp-util';
+import { getProjectRoot, getWorkspacePath } from './pnp-util';
 
 export interface WorkspaceFocusFunctionProps extends lambda.FunctionOptions {
   /**
@@ -28,17 +28,19 @@ export class WorkspaceFocusFunction extends lambda.Function {
   constructor(scope: cdk.Construct, id: string, props: WorkspaceFocusFunctionProps) {
     const projectPath = props.projectPath ?? process.cwd();
 
-    const workspacePath = getWorkspacePath({
-      workspace: props.workspace,
-      cwd: projectPath,
-    });
+    const projectRoot = getProjectRoot(projectPath);
 
-    const code = PnpCode.fromWorkspaceFocus(projectPath, props.workspace);
+    const code = PnpCode.fromWorkspaceFocus(projectRoot, props.workspace);
 
     const environment = {
       ...(props.environment ?? {}),
       NODE_OPTIONS: '--require .pnp.cjs',
     };
+
+    const workspacePath = getWorkspacePath({
+      workspace: props.workspace,
+      cwd: projectRoot,
+    });
 
     super(scope, id, {
       ...props,
