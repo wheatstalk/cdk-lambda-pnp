@@ -3,7 +3,7 @@ import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2';
 import * as apigatewayv2_integrations from '@aws-cdk/aws-apigatewayv2-integrations';
 import * as cdk from '@aws-cdk/core';
 import * as execa from 'execa';
-import { WorkspaceFocusFunction } from '../src/workspace-focus-function';
+import { YarnWorkspaceFunction } from '../src/yarn-workspace-function';
 
 const TEST_APP_DIR = path.join(__dirname, '..', 'test-app');
 
@@ -16,7 +16,7 @@ export class IntegWorkspaceFocusLit extends cdk.Stack {
     const optionalYarnProjectDir = TEST_APP_DIR;
 
     // ::SNIP
-    const handler = new WorkspaceFocusFunction(scope, 'Handler', {
+    const handler = new YarnWorkspaceFunction(scope, 'Handler', {
       // Specify the yarn workspace package name
       workspace: 'lambda',
       // Specify the workspace-relative file containing the lambda handler
