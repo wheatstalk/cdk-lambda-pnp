@@ -23,17 +23,23 @@ test('staging deps', () => {
     globstar: true,
     onlyFiles: true,
   });
-  expect(stagedFileList).toEqual([
-    'package.json',
-    'yarn.lock',
-    'packages/lambda/package.json',
-    'packages/lib/package.json',
-    '.yarnrc.yml',
-    '.yarn/install-state.gz',
-    '.yarn/yarn.build.json',
-    '.yarn/releases/yarn-berry.cjs',
-    '.yarn/plugins/@ojkelly/plugin-build.cjs',
-  ]);
+  expect(stagedFileList).toEqual(
+    expect.arrayContaining([
+      'package.json',
+      'yarn.lock',
+      'packages/lambda/package.json',
+      'packages/lib/package.json',
+      '.yarnrc.yml',
+      '.yarn/releases/yarn-berry.cjs',
+      '.yarn/plugins/@ojkelly/plugin-build.cjs',
+    ]),
+  );
+
+  expect(stagedFileList).not.toEqual(
+    expect.arrayContaining([
+      expect.stringContaining('.yarn/cache'),
+    ]),
+  );
 });
 
 test('focusing a workspace', () => {
