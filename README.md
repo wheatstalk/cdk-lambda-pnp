@@ -1,14 +1,18 @@
-# CDK Lambda PNP
+# CDK Lambda PnP Functions
 
-This CDK library allows you to build and bundle your AWS Lambda functions from a Yarn PNP project.
+This CDK library allows you to bundle and deploy your AWS Lambda functions
+from a Yarn PnP project. This project emphasizes using the PnP runtime inside
+the Lambda environment without single-file bundling.
 
-## Use Yarn's Workspace Focus
-This construct provides an alternative to `yarn.build` that bundles the lambda
-in a staging directory using `yarn workspaces focus ...`
+## Yarn Workspace Function
+
+This construct provides a basic lambda function from a yarn workspace. Your
+compiled code and dependencies are staged and trimmed down using yarn's
+`workspace-tools` plugin and `yarn workspaces focus` command.
 
 <!-- <macro exec="lit-snip ./test/integ.workspace-focus.ts"> -->
 ```ts
-const handler = new WorkspaceFocusFunction(scope, 'Handler', {
+const handler = new YarnWorkspaceFunction(scope, 'Handler', {
   // Specify the yarn workspace package name
   workspace: 'lambda',
   // Specify the workspace-relative file containing the lambda handler
@@ -51,9 +55,12 @@ Example project structure:
             └── ... <.npmignored>
 ```
 
-## Use Yarn Build
-If you have imported the [yarn.build](https://yarn.build/) plugin, you may
-create a lambda using the plugin's `build` and `bundle` commands.
+## Use yarn.BUILD
+
+This construct provides a more robust out-of-the-box experience through the
+[yarn.BUILD](https://yarn.build/) yarn plugin. In addition to bundling code
+from a yarn workspace, this construct allows you to run yarn.BUILD's build
+command during construct synthesis. 
 
 <!-- <macro exec="lit-snip ./test/integ.yarn-build.ts"> -->
 ```ts

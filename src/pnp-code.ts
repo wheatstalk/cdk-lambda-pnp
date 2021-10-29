@@ -1,6 +1,6 @@
 import * as lambda from '@aws-cdk/aws-lambda';
-import { WorkspaceFocusCode } from './workspace-focus-code';
 import { YarnBuildCode, YarnBuildOptions } from './yarn-build-code';
+import { YarnWorkspaceCode } from './yarn-workspace-code';
 
 /**
  * Provides bundled code.
@@ -20,8 +20,8 @@ export abstract class PnpCode {
   /**
    * Create lambda code by using `yarn workspaces focus`.
    */
-  static fromWorkspaceFocus(projectRoot: string, workspace: string): lambda.Code {
-    return new WorkspaceFocusCode({
+  static fromYarnWorkspace(projectRoot: string, workspace: string): lambda.Code {
+    return new YarnWorkspaceCode({
       projectRoot,
       workspace,
     });

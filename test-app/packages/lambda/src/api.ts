@@ -3,7 +3,7 @@ import { muglify } from 'lib';
 
 export async function handler(): Promise<lambda.APIGatewayProxyResult> {
   try {
-    const value = muglify('function foobar() {}');
+    const value = muglify('function foobeard() { /* REMOVED */ }');
     return {
       statusCode: 200,
       body: JSON.stringify(value),

@@ -3,7 +3,7 @@ import * as cdk from '@aws-cdk/core';
 import { PnpCode } from './pnp-code';
 import { getProjectRoot, getWorkspacePath } from './pnp-util';
 
-export interface WorkspaceFocusFunctionProps extends lambda.FunctionOptions {
+export interface YarnWorkspaceFunctionProps extends lambda.FunctionOptions {
   /**
    * Name of the workspace
    */
@@ -24,13 +24,13 @@ export interface WorkspaceFocusFunctionProps extends lambda.FunctionOptions {
 /**
  * A lambda function from a Yarn.build-based PNP Workspace.
  */
-export class WorkspaceFocusFunction extends lambda.Function {
-  constructor(scope: cdk.Construct, id: string, props: WorkspaceFocusFunctionProps) {
+export class YarnWorkspaceFunction extends lambda.Function {
+  constructor(scope: cdk.Construct, id: string, props: YarnWorkspaceFunctionProps) {
     const projectPath = props.projectPath ?? process.cwd();
 
     const projectRoot = getProjectRoot(projectPath);
 
-    const code = PnpCode.fromWorkspaceFocus(projectRoot, props.workspace);
+    const code = PnpCode.fromYarnWorkspace(projectRoot, props.workspace);
 
     const environment = {
       ...(props.environment ?? {}),
