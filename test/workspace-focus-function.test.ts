@@ -3,8 +3,8 @@ import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
 import * as fs from 'fs-extra';
 import * as globby from 'globby';
-import { PnpBundler, PnpWorkspaceFunction } from '../src';
-import { focusWorkspace, mergeProject, stageDeps } from '../src/workspace-focus-pnp-code';
+import { YarnBuildFunction } from '../src';
+import { focusWorkspace, mergeProject, stageDeps } from '../src/workspace-focus-code';
 
 const TEMP_PREFIX = path.join(os.tmpdir(), 'stage');
 const TEST_APP_PATH = path.join(__dirname, '..', 'test-app');
@@ -94,11 +94,9 @@ test('merging a workspace', () => {
 test('creating a function', () => {
   const stack = new cdk.Stack();
 
-  new PnpWorkspaceFunction(stack, 'Handler', {
+  new YarnBuildFunction(stack, 'Handler', {
     workspace: 'lambda',
     handler: 'dist/handler.handler',
-    bundler: PnpBundler.fromWorkspaceFocus({
-      projectPath: TEST_APP_PATH,
-    }),
+    projectPath: TEST_APP_PATH,
   });
 });

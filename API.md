@@ -2,33 +2,33 @@
 
 ## Constructs <a name="Constructs"></a>
 
-### PnpWorkspaceFunction <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunction"></a>
+### YarnBuildFunction <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunction"></a>
 
-A lambda function from a Yarn PNP Workspace.
+A lambda function bundled from a Yarn.build-based workspace.
 
-#### Initializers <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunction.Initializer"></a>
+#### Initializers <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunction.Initializer"></a>
 
 ```typescript
-import { PnpWorkspaceFunction } from '@wheatstalk/cdk-lambda-pnp'
+import { YarnBuildFunction } from '@wheatstalk/cdk-lambda-pnp'
 
-new PnpWorkspaceFunction(scope: Construct, id: string, props: PnpWorkspaceFunctionProps)
+new YarnBuildFunction(scope: Construct, id: string, props: YarnBuildFunctionProps)
 ```
 
-##### `scope`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunction.parameter.scope"></a>
+##### `scope`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunction.parameter.scope"></a>
 
 - *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
 
 ---
 
-##### `id`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunction.parameter.id"></a>
+##### `id`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunction.parameter.id"></a>
 
 - *Type:* `string`
 
 ---
 
-##### `props`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunction.parameter.props"></a>
+##### `props`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunction.parameter.props"></a>
 
-- *Type:* [`@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps`](#@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps)
+- *Type:* [`@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps`](#@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps)
 
 ---
 
@@ -38,57 +38,17 @@ new PnpWorkspaceFunction(scope: Construct, id: string, props: PnpWorkspaceFuncti
 
 ## Structs <a name="Structs"></a>
 
-### PnpWorkspaceFunctionCodeConfig <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig"></a>
+### YarnBuildFunctionProps <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
 
 ```typescript
-import { PnpWorkspaceFunctionCodeConfig } from '@wheatstalk/cdk-lambda-pnp'
+import { YarnBuildFunctionProps } from '@wheatstalk/cdk-lambda-pnp'
 
-const pnpWorkspaceFunctionCodeConfig: PnpWorkspaceFunctionCodeConfig = { ... }
+const yarnBuildFunctionProps: YarnBuildFunctionProps = { ... }
 ```
 
-##### `assetPathPrefix`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig.property.assetPathPrefix"></a>
-
-```typescript
-public readonly assetPathPrefix: string;
-```
-
-- *Type:* `string`
-
----
-
-##### `code`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig.property.code"></a>
-
-```typescript
-public readonly code: Code;
-```
-
-- *Type:* [`@aws-cdk/aws-lambda.Code`](#@aws-cdk/aws-lambda.Code)
-
----
-
-##### `pnpRuntimePath`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionCodeConfig.property.pnpRuntimePath"></a>
-
-```typescript
-public readonly pnpRuntimePath: string;
-```
-
-- *Type:* `string`
-
----
-
-### PnpWorkspaceFunctionProps <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps"></a>
-
-#### Initializer <a name="[object Object].Initializer"></a>
-
-```typescript
-import { PnpWorkspaceFunctionProps } from '@wheatstalk/cdk-lambda-pnp'
-
-const pnpWorkspaceFunctionProps: PnpWorkspaceFunctionProps = { ... }
-```
-
-##### `maxEventAge`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.maxEventAge"></a>
+##### `maxEventAge`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.maxEventAge"></a>
 
 ```typescript
 public readonly maxEventAge: Duration;
@@ -104,7 +64,7 @@ Maximum: 6 hours
 
 ---
 
-##### `onFailure`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.onFailure"></a>
+##### `onFailure`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.onFailure"></a>
 
 ```typescript
 public readonly onFailure: IDestination;
@@ -117,7 +77,7 @@ The destination for failed invocations.
 
 ---
 
-##### `onSuccess`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.onSuccess"></a>
+##### `onSuccess`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.onSuccess"></a>
 
 ```typescript
 public readonly onSuccess: IDestination;
@@ -130,7 +90,7 @@ The destination for successful invocations.
 
 ---
 
-##### `retryAttempts`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.retryAttempts"></a>
+##### `retryAttempts`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.retryAttempts"></a>
 
 ```typescript
 public readonly retryAttempts: number;
@@ -146,7 +106,7 @@ Maximum: 2
 
 ---
 
-##### `allowAllOutbound`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.allowAllOutbound"></a>
+##### `allowAllOutbound`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.allowAllOutbound"></a>
 
 ```typescript
 public readonly allowAllOutbound: boolean;
@@ -162,7 +122,7 @@ Lambda to connect to network targets.
 
 ---
 
-##### `allowPublicSubnet`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.allowPublicSubnet"></a>
+##### `allowPublicSubnet`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.allowPublicSubnet"></a>
 
 ```typescript
 public readonly allowPublicSubnet: boolean;
@@ -179,7 +139,7 @@ Use this property to acknowledge this limitation and still place the function in
 
 ---
 
-##### `architecture`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.architecture"></a>
+##### `architecture`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.architecture"></a>
 
 ```typescript
 public readonly architecture: Architecture;
@@ -192,7 +152,7 @@ The system architectures compatible with this lambda function.
 
 ---
 
-##### ~~`architectures`~~<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.architectures"></a>
+##### ~~`architectures`~~<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.architectures"></a>
 
 - *Deprecated:* use `architecture`
 
@@ -207,7 +167,7 @@ DEPRECATED.
 
 ---
 
-##### `codeSigningConfig`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.codeSigningConfig"></a>
+##### `codeSigningConfig`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.codeSigningConfig"></a>
 
 ```typescript
 public readonly codeSigningConfig: ICodeSigningConfig;
@@ -220,7 +180,7 @@ Code signing config associated with this function.
 
 ---
 
-##### `currentVersionOptions`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.currentVersionOptions"></a>
+##### `currentVersionOptions`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.currentVersionOptions"></a>
 
 ```typescript
 public readonly currentVersionOptions: VersionOptions;
@@ -233,7 +193,7 @@ Options for the `lambda.Version` resource automatically created by the `fn.curre
 
 ---
 
-##### `deadLetterQueue`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.deadLetterQueue"></a>
+##### `deadLetterQueue`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.deadLetterQueue"></a>
 
 ```typescript
 public readonly deadLetterQueue: IQueue;
@@ -246,7 +206,7 @@ The SQS queue to use if DLQ is enabled.
 
 ---
 
-##### `deadLetterQueueEnabled`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.deadLetterQueueEnabled"></a>
+##### `deadLetterQueueEnabled`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.deadLetterQueueEnabled"></a>
 
 ```typescript
 public readonly deadLetterQueueEnabled: boolean;
@@ -262,7 +222,7 @@ an SQS queue with default options will be defined for your Function.
 
 ---
 
-##### `description`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.description"></a>
+##### `description`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.description"></a>
 
 ```typescript
 public readonly description: string;
@@ -275,7 +235,7 @@ A description of the function.
 
 ---
 
-##### `environment`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.environment"></a>
+##### `environment`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.environment"></a>
 
 ```typescript
 public readonly environment: {[ key: string ]: string};
@@ -292,7 +252,7 @@ Lambda function source code.
 
 ---
 
-##### `environmentEncryption`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.environmentEncryption"></a>
+##### `environmentEncryption`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.environmentEncryption"></a>
 
 ```typescript
 public readonly environmentEncryption: IKey;
@@ -305,7 +265,7 @@ The AWS KMS key that's used to encrypt your function's environment variables.
 
 ---
 
-##### `events`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.events"></a>
+##### `events`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.events"></a>
 
 ```typescript
 public readonly events: IEventSource[];
@@ -320,7 +280,7 @@ You can also add event sources using `addEventSource`.
 
 ---
 
-##### `filesystem`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.filesystem"></a>
+##### `filesystem`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.filesystem"></a>
 
 ```typescript
 public readonly filesystem: FileSystem;
@@ -333,7 +293,7 @@ The filesystem configuration for the lambda function.
 
 ---
 
-##### `functionName`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.functionName"></a>
+##### `functionName`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.functionName"></a>
 
 ```typescript
 public readonly functionName: string;
@@ -347,7 +307,7 @@ A name for the function.
 
 ---
 
-##### `initialPolicy`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.initialPolicy"></a>
+##### `initialPolicy`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.initialPolicy"></a>
 
 ```typescript
 public readonly initialPolicy: PolicyStatement[];
@@ -362,7 +322,7 @@ You can call `addToRolePolicy` to the created lambda to add statements post crea
 
 ---
 
-##### `insightsVersion`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.insightsVersion"></a>
+##### `insightsVersion`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.insightsVersion"></a>
 
 ```typescript
 public readonly insightsVersion: LambdaInsightsVersion;
@@ -377,7 +337,7 @@ Specify the version of CloudWatch Lambda insights to use for monitoring.
 
 ---
 
-##### `layers`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.layers"></a>
+##### `layers`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.layers"></a>
 
 ```typescript
 public readonly layers: ILayerVersion[];
@@ -394,7 +354,7 @@ that can be used by multiple functions.
 
 ---
 
-##### `logRetention`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.logRetention"></a>
+##### `logRetention`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.logRetention"></a>
 
 ```typescript
 public readonly logRetention: RetentionDays;
@@ -411,7 +371,7 @@ remove the retention policy, set the value to `INFINITE`.
 
 ---
 
-##### `logRetentionRetryOptions`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.logRetentionRetryOptions"></a>
+##### `logRetentionRetryOptions`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.logRetentionRetryOptions"></a>
 
 ```typescript
 public readonly logRetentionRetryOptions: LogRetentionRetryOptions;
@@ -426,7 +386,7 @@ These options control the retry policy when interacting with CloudWatch APIs.
 
 ---
 
-##### `logRetentionRole`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.logRetentionRole"></a>
+##### `logRetentionRole`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.logRetentionRole"></a>
 
 ```typescript
 public readonly logRetentionRole: IRole;
@@ -439,7 +399,7 @@ The IAM role for the Lambda function associated with the custom resource that se
 
 ---
 
-##### `memorySize`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.memorySize"></a>
+##### `memorySize`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.memorySize"></a>
 
 ```typescript
 public readonly memorySize: number;
@@ -456,7 +416,7 @@ Developer Guide.
 
 ---
 
-##### `profiling`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.profiling"></a>
+##### `profiling`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.profiling"></a>
 
 ```typescript
 public readonly profiling: boolean;
@@ -471,7 +431,7 @@ Enable profiling.
 
 ---
 
-##### `profilingGroup`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.profilingGroup"></a>
+##### `profilingGroup`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.profilingGroup"></a>
 
 ```typescript
 public readonly profilingGroup: IProfilingGroup;
@@ -486,7 +446,7 @@ Profiling Group.
 
 ---
 
-##### `reservedConcurrentExecutions`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.reservedConcurrentExecutions"></a>
+##### `reservedConcurrentExecutions`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.reservedConcurrentExecutions"></a>
 
 ```typescript
 public readonly reservedConcurrentExecutions: number;
@@ -501,7 +461,7 @@ The maximum of concurrent executions you want to reserve for the function.
 
 ---
 
-##### `role`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.role"></a>
+##### `role`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.role"></a>
 
 ```typescript
 public readonly role: IRole;
@@ -525,7 +485,7 @@ The relevant managed policies are "service-role/AWSLambdaBasicExecutionRole" and
 
 ---
 
-##### ~~`securityGroup`~~<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.securityGroup"></a>
+##### ~~`securityGroup`~~<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.securityGroup"></a>
 
 - *Deprecated:* - This property is deprecated, use securityGroups instead
 
@@ -547,7 +507,7 @@ Function constructor will throw an error if both are specified.
 
 ---
 
-##### `securityGroups`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.securityGroups"></a>
+##### `securityGroups`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.securityGroups"></a>
 
 ```typescript
 public readonly securityGroups: ISecurityGroup[];
@@ -564,7 +524,7 @@ Only used if 'vpc' is supplied.
 
 ---
 
-##### `timeout`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.timeout"></a>
+##### `timeout`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.timeout"></a>
 
 ```typescript
 public readonly timeout: Duration;
@@ -580,7 +540,7 @@ based on the function's expected execution time.
 
 ---
 
-##### `tracing`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.tracing"></a>
+##### `tracing`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.tracing"></a>
 
 ```typescript
 public readonly tracing: Tracing;
@@ -593,7 +553,7 @@ Enable AWS X-Ray Tracing for Lambda Function.
 
 ---
 
-##### `vpc`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.vpc"></a>
+##### `vpc`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.vpc"></a>
 
 ```typescript
 public readonly vpc: IVpc;
@@ -608,7 +568,7 @@ Specify this if the Lambda function needs to access resources in a VPC.
 
 ---
 
-##### `vpcSubnets`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.vpcSubnets"></a>
+##### `vpcSubnets`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.vpcSubnets"></a>
 
 ```typescript
 public readonly vpcSubnets: SubnetSelection;
@@ -624,74 +584,7 @@ requires a NAT gateway, so picking Public subnets is not allowed.
 
 ---
 
-##### `handler`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.handler"></a>
-
-```typescript
-public readonly handler: string;
-```
-
-- *Type:* `string`
-
-Name of the lambda handler, relative to the workspace.
-
----
-
-##### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.workspace"></a>
-
-```typescript
-public readonly workspace: string;
-```
-
-- *Type:* `string`
-
-Name of the workspace.
-
----
-
-##### `bundler`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpWorkspaceFunctionProps.property.bundler"></a>
-
-```typescript
-public readonly bundler: PnpBundler;
-```
-
-- *Type:* [`@wheatstalk/cdk-lambda-pnp.PnpBundler`](#@wheatstalk/cdk-lambda-pnp.PnpBundler)
-- *Default:* use PnpBundler.fromWorkspaceFocus()
-
-The bundler.
-
----
-
-### WorkspaceFocusBundlerOptions <a name="@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions"></a>
-
-#### Initializer <a name="[object Object].Initializer"></a>
-
-```typescript
-import { WorkspaceFocusBundlerOptions } from '@wheatstalk/cdk-lambda-pnp'
-
-const workspaceFocusBundlerOptions: WorkspaceFocusBundlerOptions = { ... }
-```
-
-##### `projectPath`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions.property.projectPath"></a>
-
-```typescript
-public readonly projectPath: string;
-```
-
-- *Type:* `string`
-
----
-
-### YarnBuildBundlerOptions <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions"></a>
-
-#### Initializer <a name="[object Object].Initializer"></a>
-
-```typescript
-import { YarnBuildBundlerOptions } from '@wheatstalk/cdk-lambda-pnp'
-
-const yarnBuildBundlerOptions: YarnBuildBundlerOptions = { ... }
-```
-
-##### `runBuild`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions.property.runBuild"></a>
+##### `runBuild`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.runBuild"></a>
 
 ```typescript
 public readonly runBuild: boolean;
@@ -704,7 +597,7 @@ Use 'yarn workspace ${name} build' to build your code.
 
 ---
 
-##### `runInstall`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions.property.runInstall"></a>
+##### `runInstall`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.runInstall"></a>
 
 ```typescript
 public readonly runInstall: boolean;
@@ -717,13 +610,40 @@ Use 'yarn install' to install dependencies.
 
 ---
 
-##### `projectPath`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions.property.projectPath"></a>
+##### `handler`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.handler"></a>
+
+```typescript
+public readonly handler: string;
+```
+
+- *Type:* `string`
+
+Name of the lambda handler, relative to the workspace.
+
+---
+
+##### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.workspace"></a>
+
+```typescript
+public readonly workspace: string;
+```
+
+- *Type:* `string`
+
+Name of the workspace.
+
+---
+
+##### `projectPath`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.YarnBuildFunctionProps.property.projectPath"></a>
 
 ```typescript
 public readonly projectPath: string;
 ```
 
 - *Type:* `string`
+- *Default:* process.cwd()
+
+Optional location of a directory in the project.
 
 ---
 
@@ -764,62 +684,6 @@ Use 'yarn install' to install dependencies.
 ---
 
 ## Classes <a name="Classes"></a>
-
-### PnpBundler <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler"></a>
-
-#### Initializers <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.Initializer"></a>
-
-```typescript
-import { PnpBundler } from '@wheatstalk/cdk-lambda-pnp'
-
-new PnpBundler()
-```
-
-#### Methods <a name="Methods"></a>
-
-##### `bundle` <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.bundle"></a>
-
-```typescript
-public bundle(workspace: string)
-```
-
-###### `workspace`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.parameter.workspace"></a>
-
-- *Type:* `string`
-
----
-
-#### Static Functions <a name="Static Functions"></a>
-
-##### `fromWorkspaceFocus` <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.fromWorkspaceFocus"></a>
-
-```typescript
-import { PnpBundler } from '@wheatstalk/cdk-lambda-pnp'
-
-PnpBundler.fromWorkspaceFocus(options?: WorkspaceFocusBundlerOptions)
-```
-
-###### `options`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.parameter.options"></a>
-
-- *Type:* [`@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions`](#@wheatstalk/cdk-lambda-pnp.WorkspaceFocusBundlerOptions)
-
----
-
-##### `fromYarnBuild` <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.fromYarnBuild"></a>
-
-```typescript
-import { PnpBundler } from '@wheatstalk/cdk-lambda-pnp'
-
-PnpBundler.fromYarnBuild(options?: YarnBuildBundlerOptions)
-```
-
-###### `options`<sup>Optional</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpBundler.parameter.options"></a>
-
-- *Type:* [`@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions`](#@wheatstalk/cdk-lambda-pnp.YarnBuildBundlerOptions)
-
----
-
-
 
 ### PnpCode <a name="@wheatstalk/cdk-lambda-pnp.PnpCode"></a>
 

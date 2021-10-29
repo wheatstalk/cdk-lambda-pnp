@@ -8,18 +8,18 @@ import * as globby from 'globby';
 import * as ignorewalk from 'ignore-walk';
 
 /** @internal */
-export interface WorkspaceFocusPnpCodeOptions {
+export interface WorkspaceFocusCodeOptions {
   readonly projectRoot: string;
   readonly workspace: string;
 }
 
 /** @internal */
-export class WorkspaceFocusPnpCode extends lambda.Code {
+export class WorkspaceFocusCode extends lambda.Code {
   readonly isInline = false;
   private readonly projectRoot: string;
   private readonly workspace: string;
 
-  constructor(options: WorkspaceFocusPnpCodeOptions) {
+  constructor(options: WorkspaceFocusCodeOptions) {
     super();
 
     this.projectRoot = options.projectRoot;

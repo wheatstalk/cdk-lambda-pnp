@@ -20,17 +20,17 @@ export interface YarnBuildOptions {
 }
 
 /** @internal */
-export interface YarnBuildPnpCodeOptions extends YarnBuildOptions {
+export interface YarnBuildCodeOptions extends YarnBuildOptions {
   readonly projectRoot: string;
   readonly workspace: string;
 }
 
 /** @internal */
-export class YarnBuildPnpCode extends lambda.Code {
+export class YarnBuildCode extends lambda.Code {
   readonly isInline = false;
   private readonly code: lambda.Code;
 
-  constructor(options: YarnBuildPnpCodeOptions) {
+  constructor(options: YarnBuildCodeOptions) {
     super();
 
     const cwd = options.projectRoot;
