@@ -41,7 +41,7 @@ export class WorkspaceFocusCode extends lambda.Code {
         projectRoot: this.projectRoot,
       });
 
-      console.info(`Focusing workspace: ${this.workspace}`);
+      console.info(`Focusing staged project workspace: ${this.workspace}`);
       focusWorkspace({
         stagingDirectory: stageDir,
         workspace: this.workspace,
