@@ -35,21 +35,25 @@ export class WorkspaceFocusCode extends lambda.Code {
     const stageDir = fs.mkdtempSync(path.join(os.tmpdir(), '.pnp-code'));
 
     try {
+      console.log(`Staging project dependencies ${this.projectRoot} => ${stageDir}`);
       stageDeps({
         cwd: stageDir,
         source: this.projectRoot,
       });
 
+      console.log(`Focusing workspace ${this.workspace}`);
       focusWorkspace({
         cwd: stageDir,
         workspace: this.workspace,
       });
 
+      console.log(`Merging project workspaces ${this.projectRoot} => ${stageDir}`);
       mergeProject({
         cwd: stageDir,
         source: this.projectRoot,
       });
 
+      console.log('Producing asset from stage');
       return lambda.Code.fromAsset(stageDir).bind(scope);
     } finally {
       fs.removeSync(stageDir);
