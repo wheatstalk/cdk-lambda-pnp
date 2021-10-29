@@ -37,20 +37,20 @@ export class WorkspaceFocusCode extends lambda.Code {
     try {
       console.info(`Staging project dependencies: ${this.projectRoot} => ${stageDir}`);
       stageDeps({
-        cwd: stageDir,
-        source: this.projectRoot,
+        stagingDirectory: stageDir,
+        projectRoot: this.projectRoot,
       });
 
       console.info(`Focusing workspace: ${this.workspace}`);
       focusWorkspace({
-        cwd: stageDir,
+        stagingDirectory: stageDir,
         workspace: this.workspace,
       });
 
       console.info(`Merging project workspaces: ${this.projectRoot} => ${stageDir}`);
       mergeProject({
-        cwd: stageDir,
-        source: this.projectRoot,
+        stagingDirectory: stageDir,
+        projectRoot: this.projectRoot,
       });
 
       console.info('Producing asset from stage');
@@ -63,14 +63,16 @@ export class WorkspaceFocusCode extends lambda.Code {
 
 /** @internal */
 export interface StageDepsOptions {
-  readonly source: string;
-  readonly cwd: string;
+  readonly projectRoot: string;
+  readonly stagingDirectory: string;
 }
 
 /** @internal */
 export function stageDeps(options: StageDepsOptions): string {
-  const depsStage = options.cwd;
-  const source = options.source;
+  checkProjectRoot(options.projectRoot);
+
+  const depsStage = options.stagingDirectory;
+  const source = options.projectRoot;
 
   const patterns = [
     '.yarn/**/*',
@@ -97,26 +99,28 @@ export function stageDeps(options: StageDepsOptions): string {
 
 /** @internal */
 export interface FocusWorkspaceOptions {
-  readonly cwd: string;
+  readonly stagingDirectory: string;
   readonly workspace: string;
 }
 
 /** @internal */
 export function focusWorkspace(options: FocusWorkspaceOptions): void {
-  execa.sync('yarn', ['plugin', 'import', 'workspace-tools'], { cwd: options.cwd });
-  execa.sync('yarn', ['workspaces', 'focus', options.workspace, '--production'], { cwd: options.cwd });
+  execa.sync('yarn', ['plugin', 'import', 'workspace-tools'], { cwd: options.stagingDirectory });
+  execa.sync('yarn', ['workspaces', 'focus', options.workspace, '--production'], { cwd: options.stagingDirectory });
 }
 
 /** @internal */
 export interface MergeProjectOptions {
-  readonly cwd: string;
-  readonly source: string;
+  readonly stagingDirectory: string;
+  readonly projectRoot: string;
 }
 
 /** @internal */
 export function mergeProject(options: MergeProjectOptions): void {
+  checkProjectRoot(options.projectRoot);
+
   const files = ignorewalk.sync({
-    path: options.source,
+    path: options.projectRoot,
     ignoreFiles: ['.npmignore'],
     includeEmpty: false,
   });
@@ -127,6 +131,13 @@ export function mergeProject(options: MergeProjectOptions): void {
       continue;
     }
 
-    fs.copySync(path.join(options.source, file), path.join(options.cwd, file));
+    fs.copySync(path.join(options.projectRoot, file), path.join(options.stagingDirectory, file));
+  }
+}
+
+/** @internal */
+function checkProjectRoot(projectRoot: string) {
+  if (!fs.existsSync(path.join(projectRoot, 'yarn.lock'))) {
+    throw new Error(`The given project root ${projectRoot} does not contain a yarn.lock!`);
   }
 }

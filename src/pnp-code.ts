@@ -7,7 +7,7 @@ import { YarnBuildCode, YarnBuildOptions } from './yarn-build-code';
  */
 export abstract class PnpCode {
   /**
-   * Create lambda code with yarn.build.
+   * Create lambda code with the yarn.build plugin.
    */
   static fromYarnBuild(projectRoot: string, workspace: string, options: YarnBuildOptions = {}): lambda.Code {
     return new YarnBuildCode({
@@ -17,6 +17,9 @@ export abstract class PnpCode {
     });
   }
 
+  /**
+   * Create lambda code by using `yarn workspaces focus`.
+   */
   static fromWorkspaceFocus(projectRoot: string, workspace: string): lambda.Code {
     return new WorkspaceFocusCode({
       projectRoot,

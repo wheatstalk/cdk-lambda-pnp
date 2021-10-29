@@ -1,4 +1,6 @@
+import * as path from 'path';
 import * as execa from 'execa';
+import * as fs from 'fs-extra';
 
 /** @internal */
 export interface GetWorkspaceRootOptions {
@@ -29,4 +31,20 @@ export function getWorkspacePath(options: GetWorkspaceRootOptions): string {
   }
 
   throw new Error(`Cannot find a workspace named ${options.workspace} from ${options.cwd}`);
+}
+
+export function getProjectRoot(projectPath: string): string {
+  let currentPath = path.resolve(projectPath);
+
+  while (!fs.existsSync(path.join(currentPath, 'yarn.lock'))) {
+    const before = currentPath;
+    currentPath = path.resolve(currentPath, '..');
+
+    if (currentPath === before) {
+      // We've reached the end!
+      throw new Error(`Could not find a yarn.lock starting from ${projectPath}`);
+    }
+  }
+
+  return currentPath;
 }
