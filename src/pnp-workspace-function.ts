@@ -1,18 +1,25 @@
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
-import * as execa from 'execa';
-import { PnpCode, PnpCodeFromWorkspaceOptions } from './pnp-code';
+import { PnpCode } from './pnp-code';
+import { getWorkspacePath } from './pnp-util';
+import { YarnBuildOptions } from './yarn-build-pnp-code';
 
-export interface PnpWorkspaceFunctionProps extends lambda.FunctionOptions, PnpCodeFromWorkspaceOptions {
+export interface PnpWorkspaceFunctionProps extends lambda.FunctionOptions {
   /**
    * Name of the workspace
    */
   readonly workspace: string;
 
   /**
-   * Name of the lambda handler, relative to the workspace's root.
+   * Name of the lambda handler, relative to the workspace.
    */
   readonly handler: string;
+
+  /**
+   * The bundler.
+   * @default - use PnpBundler.fromWorkspaceFocus()
+   */
+  readonly bundler?: PnpBundler;
 }
 
 /**
@@ -20,63 +27,95 @@ export interface PnpWorkspaceFunctionProps extends lambda.FunctionOptions, PnpCo
  */
 export class PnpWorkspaceFunction extends lambda.Function {
   constructor(scope: cdk.Construct, id: string, props: PnpWorkspaceFunctionProps) {
-    const workspaceRoot = getWorkspaceRoot({
-      workspace: props.workspace,
-      cwd: props.cwd,
-    });
+    const bundler = props.bundler ?? PnpBundler.fromWorkspaceFocus();
 
-    const config: PnpWorkspaceFunctionCodeConfig = {
-      bundlingPrefix: '',
-      code: PnpCode.fromDockerBuild(props.workspace, props),
-    };
+    const bundle = bundler.bundle(props.workspace);
 
     const environment = {
       ...(props.environment ?? {}),
-      NODE_OPTIONS: `--require ${(config.bundlingPrefix)}.pnp.cjs`,
+      NODE_OPTIONS: `--require ${bundle.pnpRuntimePath}`,
     };
 
     super(scope, id, {
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: config.code,
-      handler: `${config.bundlingPrefix}${workspaceRoot}/${props.handler}`,
+      code: bundle.code,
+      handler: `${bundle.assetPathPrefix}/${props.handler}`,
       environment,
     });
   }
 }
 
-interface PnpWorkspaceFunctionCodeConfig {
-  readonly bundlingPrefix: string;
+export abstract class PnpBundler {
+  static fromYarnBuild(options: YarnBuildBundlerOptions = {}): PnpBundler {
+    return new YarnBuildBundler(options);
+  }
+
+  static fromWorkspaceFocus(options: WorkspaceFocusBundlerOptions = {}): PnpBundler {
+    return new WorkspaceFocusBundler(options);
+  }
+
+  abstract bundle(workspace: string): PnpWorkspaceFunctionCodeConfig;
+}
+
+export interface PnpWorkspaceFunctionCodeConfig {
+  readonly pnpRuntimePath: string;
+  readonly assetPathPrefix: string;
   readonly code: lambda.Code;
 }
 
-/** @internal */
-export interface GetWorkspaceRootOptions {
-  readonly workspace: string;
-  readonly cwd?: string;
+export interface YarnBuildBundlerOptions extends YarnBuildOptions {
+  readonly projectPath?: string;
 }
 
-/** @internal */
-export function getWorkspaceRoot(options: GetWorkspaceRootOptions): string {
-  const cwd = options.cwd ?? process.cwd();
+class YarnBuildBundler extends PnpBundler {
+  private readonly projectPath: string;
 
-  const infoRes = execa.sync('yarn', ['workspace', options.workspace, 'info', '--name-only', '--json'], {
-    cwd,
-  });
+  constructor(private readonly options: YarnBuildBundlerOptions) {
+    super();
 
-  const lines = infoRes.stdout.split(/\r?\n/i).map(line => JSON.parse(line));
-  for (const line of lines) {
-    // name@workspace:path/here
-    const parts = line.split('@workspace:');
-
-    if (parts.length !== 2) {
-      continue;
-    }
-
-    if (parts[0] === options.workspace) {
-      return parts[1];
-    }
+    this.projectPath = this.options.projectPath ?? process.cwd();
   }
 
-  throw new Error(`Cannot find a workspace named ${options.workspace} from ${options.cwd}`);
+  bundle(workspace: string): PnpWorkspaceFunctionCodeConfig {
+    const workspacePath = getWorkspacePath({
+      workspace,
+      cwd: this.projectPath,
+    });
+
+    return {
+      code: PnpCode.fromYarnBuild(this.projectPath, workspace, this.options),
+      assetPathPrefix: `bundle/${workspacePath}`,
+      pnpRuntimePath: 'bundle/.pnp.cjs',
+    };
+  }
+}
+
+export interface WorkspaceFocusBundlerOptions {
+  readonly projectPath?: string;
+}
+
+class WorkspaceFocusBundler extends PnpBundler {
+  private readonly projectPath: string;
+
+  constructor(private readonly options: WorkspaceFocusBundlerOptions) {
+    super();
+
+    this.projectPath = this.options.projectPath ?? process.cwd();
+  }
+
+  bundle(workspace: string): PnpWorkspaceFunctionCodeConfig {
+    const workspacePath = getWorkspacePath({
+      workspace,
+      cwd: this.projectPath,
+    });
+
+    const projectRoot = this.projectPath;
+
+    return {
+      code: PnpCode.fromWorkspaceFocus(projectRoot, workspace),
+      assetPathPrefix: workspacePath,
+      pnpRuntimePath: '.pnp.cjs',
+    };
+  }
 }

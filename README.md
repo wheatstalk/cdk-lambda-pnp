@@ -12,15 +12,14 @@ const handler = new PnpWorkspaceFunction(scope, 'Handler', {
   workspace: 'lambda',
   // Specify the workspace-relative file containing the lambda handler
   handler: 'dist/api.handler',
-  // Optionally run 'yarn install'.
-  runInstall: true,
-  // Optionally run 'yarn workspace lambda build'.
-  runBuild: true,
 
-  // Provide an optional yarn project directory. Useful in case you're
-  // building a lambda from outside of a yarn pnp environment. By
-  // default, we use the process's current working directory.
-  cwd: optionalYarnProjectDir,
+  // Optionally specify how your yarn pnp project hshould be bundled.
+  bundler: PnpBundler.fromWorkspaceFocus({
+    // Provide an optional yarn project directory. Useful in case you're
+    // building a lambda from outside of a yarn pnp environment. By
+    // default, we use the process's current working directory.
+    projectPath: optionalYarnProjectDir,
+  }),
 });
 
 // Use your function in an API, for example
