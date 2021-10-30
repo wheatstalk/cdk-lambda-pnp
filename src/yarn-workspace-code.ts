@@ -81,6 +81,7 @@ export function stageDeps(options: StageDepsOptions): string {
     '.yarnrc.yml',
     'package.json',
     '**/package.json',
+    '!**/cdk.out',
   ];
   const fileList = globby.sync(patterns, {
     cwd: source,
@@ -105,8 +106,8 @@ export interface FocusWorkspaceOptions {
 
 /** @internal */
 export function focusWorkspace(options: FocusWorkspaceOptions): void {
-  execa.sync('yarn', ['plugin', 'import', 'workspace-tools'], { cwd: options.stagingDirectory });
-  execa.sync('yarn', ['workspaces', 'focus', options.workspace, '--production'], { cwd: options.stagingDirectory });
+  execa.sync('yarn', ['plugin', 'import', 'workspace-tools'], {cwd: options.stagingDirectory});
+  execa.sync('yarn', ['workspaces', 'focus', options.workspace, '--production'], {cwd: options.stagingDirectory});
 }
 
 /** @internal */
