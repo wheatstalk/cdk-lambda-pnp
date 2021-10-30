@@ -2,8 +2,8 @@ import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as globby from 'globby';
-import {TEST_APP_PATH} from '../src/constants';
-import {stageDeps, focusWorkspace, mergeProject} from '../src/yarn-workspace-code';
+import { TEST_APP_PATH } from '../src/constants';
+import { stageDeps, focusWorkspace, mergeProject } from '../src/yarn-workspace-code';
 
 const TEMP_PREFIX = path.join(os.tmpdir(), 'stage');
 
