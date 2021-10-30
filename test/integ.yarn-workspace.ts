@@ -3,7 +3,7 @@ import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2';
 import * as apigatewayv2_integrations from '@aws-cdk/aws-apigatewayv2-integrations';
 import * as cdk from '@aws-cdk/core';
 import * as execa from 'execa';
-import { YarnWorkspaceFunction } from '../src/yarn-workspace-function';
+import { YarnWorkspaceFunction } from '../src';
 
 const TEST_APP_DIR = path.join(__dirname, '..', 'test-app');
 

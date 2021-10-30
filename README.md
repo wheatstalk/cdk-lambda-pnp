@@ -10,7 +10,7 @@ the Lambda environment without single-file bundling.
 Your compiled code and dependencies are staged and trimmed down using yarn's
 `workspace-tools` plugin and `yarn workspaces focus` command.
 
-<!-- <macro exec="lit-snip ./test/integ.workspace-focus.ts"> -->
+<!-- <macro exec="lit-snip ./test/integ.yarn-workspace.ts"> -->
 ```ts
 const handler = new YarnWorkspaceFunction(scope, 'Handler', {
   // Specify the yarn workspace package name

@@ -2,6 +2,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
+import { fingerprint } from '@aws-cdk/core/lib/fs/fingerprint';
 import * as execa from 'execa';
 import * as fs from 'fs-extra';
 import * as globby from 'globby';
@@ -32,31 +33,71 @@ export class YarnWorkspaceCode extends lambda.Code {
       throw new Error('Cannot add pnp code by stage without an app');
     }
 
-    const stageDir = fs.mkdtempSync(path.join(os.tmpdir(), '.pnp-code'));
+    const focusedWorkspace = prepareFocusedWorkspace({
+      projectRoot: this.projectRoot,
+      workspace: this.workspace,
+      cacheDirectory: app.assetOutdir,
+    });
 
+    const assetDirectory = fs.mkdtempSync(path.join(os.tmpdir(), '.pnp-code'));
     try {
-      console.info(`Staging project dependencies: ${this.projectRoot} => ${stageDir}`);
-      stageDeps({
-        stagingDirectory: stageDir,
-        projectRoot: this.projectRoot,
+      fs.copySync(focusedWorkspace, assetDirectory, {
+        recursive: true,
       });
 
-      console.info(`Focusing staged project workspace: ${this.workspace}`);
-      focusWorkspace({
-        stagingDirectory: stageDir,
-        workspace: this.workspace,
-      });
-
-      console.info(`Merging project workspaces: ${this.projectRoot} => ${stageDir}`);
+      console.info(`Merging project workspaces: ${this.projectRoot} => ${assetDirectory}`);
       mergeProject({
-        stagingDirectory: stageDir,
+        assetDirectory,
         projectRoot: this.projectRoot,
       });
 
       console.info('Producing asset from stage');
-      return lambda.Code.fromAsset(stageDir).bind(scope);
+      return lambda.Code.fromAsset(assetDirectory).bind(scope);
     } finally {
-      fs.removeSync(stageDir);
+      fs.removeSync(assetDirectory);
+    }
+  }
+}
+
+export interface PrepareFocusedWorkspaceOptions {
+  readonly projectRoot: string;
+  readonly workspace: string;
+  readonly cacheDirectory: string;
+}
+
+/** @internal */
+export function prepareFocusedWorkspace(options: PrepareFocusedWorkspaceOptions) {
+  const depsStagingDirectory = fs.mkdtempSync(path.join(os.tmpdir(), '.pnp-code'));
+
+  try {
+    console.info(`Staging project dependencies: ${(options.projectRoot)} => ${depsStagingDirectory}`);
+    stageDeps({
+      depsStagingDirectory,
+      projectRoot: options.projectRoot,
+    });
+
+    const stageFingerprint = fingerprint(depsStagingDirectory, {
+      extraHash: options.workspace,
+    });
+
+    const cacheDirectory = path.join(options.cacheDirectory, '.pnp-cache.' + stageFingerprint);
+
+    if (!fs.existsSync(cacheDirectory)) {
+      console.info(`Focusing staged project workspace: ${(options.workspace)}`);
+      focusWorkspace({
+        depsStagingDirectory,
+        workspace: options.workspace,
+      });
+
+      fs.moveSync(depsStagingDirectory, cacheDirectory);
+    } else {
+      console.info(`Reusing cached focused project workspace: ${(options.workspace)}`);
+    }
+
+    return cacheDirectory;
+  } finally {
+    if (fs.existsSync(depsStagingDirectory)) {
+      fs.removeSync(depsStagingDirectory);
     }
   }
 }
@@ -64,21 +105,24 @@ export class YarnWorkspaceCode extends lambda.Code {
 /** @internal */
 export interface StageDepsOptions {
   readonly projectRoot: string;
-  readonly stagingDirectory: string;
+  readonly depsStagingDirectory: string;
 }
 
 /** @internal */
 export function stageDeps(options: StageDepsOptions): string {
   checkProjectRoot(options.projectRoot);
 
-  const depsStage = options.stagingDirectory;
+  const depsStage = options.depsStagingDirectory;
   const source = options.projectRoot;
 
   const patterns = [
-    '.yarn/**/*',
-    '!.yarn/cache',
-    'yarn.lock',
+    '.yarn/patches',
+    '.yarn/plugins',
+    '.yarn/releases',
+    '.yarn/sdks',
+    '.yarn/versions',
     '.yarnrc.yml',
+    'yarn.lock',
     'package.json',
     '**/package.json',
     '!**/cdk.out',
@@ -100,19 +144,19 @@ export function stageDeps(options: StageDepsOptions): string {
 
 /** @internal */
 export interface FocusWorkspaceOptions {
-  readonly stagingDirectory: string;
+  readonly depsStagingDirectory: string;
   readonly workspace: string;
 }
 
 /** @internal */
 export function focusWorkspace(options: FocusWorkspaceOptions): void {
-  execa.sync('yarn', ['plugin', 'import', 'workspace-tools'], { cwd: options.stagingDirectory });
-  execa.sync('yarn', ['workspaces', 'focus', options.workspace, '--production'], { cwd: options.stagingDirectory });
+  execa.sync('yarn', ['plugin', 'import', 'workspace-tools'], { cwd: options.depsStagingDirectory });
+  execa.sync('yarn', ['workspaces', 'focus', options.workspace, '--production'], { cwd: options.depsStagingDirectory });
 }
 
 /** @internal */
 export interface MergeProjectOptions {
-  readonly stagingDirectory: string;
+  readonly assetDirectory: string;
   readonly projectRoot: string;
 }
 
@@ -132,7 +176,7 @@ export function mergeProject(options: MergeProjectOptions): void {
       continue;
     }
 
-    fs.copySync(path.join(options.projectRoot, file), path.join(options.stagingDirectory, file));
+    fs.copySync(path.join(options.projectRoot, file), path.join(options.assetDirectory, file));
   }
 }
 

@@ -26,8 +26,8 @@
     "release": "npx projen release",
     "upgrade": "npx projen upgrade",
     "projen": "npx projen",
-    "integ:workspace-focus": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.workspace-focus.ts\"",
-    "integ:yarn-build": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.yarn-build.ts\""
+    "integ:yarn-build": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.yarn-build.ts\"",
+    "integ:yarn-workspace": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.yarn-workspace.ts\""
   },
   "author": {
     "name": "Josh Kellendonk",

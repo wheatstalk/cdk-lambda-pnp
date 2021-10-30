@@ -1,5 +1,5 @@
 import type * as lambda from 'aws-lambda';
-import { muglify } from 'lib';
+import {muglify} from 'lib';
 
 export async function handler(): Promise<lambda.APIGatewayProxyResult> {
   try {
@@ -14,4 +14,15 @@ export async function handler(): Promise<lambda.APIGatewayProxyResult> {
       body: JSON.stringify(e),
     };
   }
+}
+
+if (require.main === module) {
+  handler()
+    .then(res => {
+      console.log(JSON.stringify(res));
+    })
+    .catch(e => {
+      console.error(e);
+      process.exit(1);
+    });
 }

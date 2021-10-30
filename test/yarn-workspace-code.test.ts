@@ -10,7 +10,7 @@ const TEMP_PREFIX = path.join(os.tmpdir(), 'stage');
 test('staging deps', () => {
   // WHEN
   const cwd = stageDeps({
-    stagingDirectory: fs.mkdtempSync(TEMP_PREFIX),
+    depsStagingDirectory: fs.mkdtempSync(TEMP_PREFIX),
     projectRoot: TEST_APP_PATH,
   });
 
@@ -48,13 +48,13 @@ test('staging deps', () => {
 
 test('focusing a workspace', () => {
   const cwd = stageDeps({
-    stagingDirectory: fs.mkdtempSync(TEMP_PREFIX),
+    depsStagingDirectory: fs.mkdtempSync(TEMP_PREFIX),
     projectRoot: TEST_APP_PATH,
   });
 
   // WHEN
   focusWorkspace({
-    stagingDirectory: cwd,
+    depsStagingDirectory: cwd,
     workspace: 'lambda',
   });
 
@@ -69,18 +69,18 @@ test('focusing a workspace', () => {
 
 test('merging a workspace', () => {
   const cwd = stageDeps({
-    stagingDirectory: fs.mkdtempSync(TEMP_PREFIX),
+    depsStagingDirectory: fs.mkdtempSync(TEMP_PREFIX),
     projectRoot: TEST_APP_PATH,
   });
 
   focusWorkspace({
-    stagingDirectory: cwd,
+    depsStagingDirectory: cwd,
     workspace: 'lambda',
   });
 
   // WHEN
   mergeProject({
-    stagingDirectory: cwd,
+    assetDirectory: cwd,
     projectRoot: TEST_APP_PATH,
   });
 
