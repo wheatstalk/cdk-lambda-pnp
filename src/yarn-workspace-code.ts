@@ -91,7 +91,7 @@ export function prepareFocusedWorkspace(options: PrepareFocusedWorkspaceOptions)
 
       fs.moveSync(depsStagingDirectory, cacheDirectory);
     } else {
-      console.info(`Reusing cached focused project workspace: ${(options.workspace)}`);
+      console.info(`Reusing cached project workspace: ${(options.workspace)}`);
     }
 
     return cacheDirectory;
