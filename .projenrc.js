@@ -33,6 +33,7 @@ const project = new pj.AwsCdkConstructLibrary({
   cdkDependencies: [
     '@aws-cdk/core',
     '@aws-cdk/aws-lambda',
+    '@aws-cdk/aws-s3-assets',
   ],
 
   bundledDeps: [
@@ -87,6 +88,7 @@ for (const ignore of ignores) {
 
 project.package.setScript('integ:yarn-build', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.yarn-build.ts"');
 project.package.setScript('integ:yarn-workspace', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.yarn-workspace.ts"');
+project.package.setScript('integ:yarn-workspace-2fn', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.yarn-workspace-2fn.ts"');
 
 const macros = project.addTask('readme-macros');
 macros.exec('shx mv README.md README.md.bak');

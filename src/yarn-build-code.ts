@@ -57,9 +57,6 @@ export class YarnBuildCode extends lambda.Code {
     const bundleFile = 'bundle.zip';
     const execaBuildOptions: execa.SyncOptions = {
       ...execaBaseOptions,
-      // Show the build output
-      stdout: process.stdout,
-      stderr: process.stderr,
     };
 
     if (runInstall) {

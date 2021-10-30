@@ -27,7 +27,8 @@
     "upgrade": "npx projen upgrade",
     "projen": "npx projen",
     "integ:yarn-build": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.yarn-build.ts\"",
-    "integ:yarn-workspace": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.yarn-workspace.ts\""
+    "integ:yarn-workspace": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.yarn-workspace.ts\"",
+    "integ:yarn-workspace-2fn": "cdk --app \"ts-node -P tsconfig.dev.json test/integ.yarn-workspace-2fn.ts\""
   },
   "author": {
     "name": "Josh Kellendonk",
@@ -39,6 +40,7 @@
     "@aws-cdk/aws-apigatewayv2": "^1.95.2",
     "@aws-cdk/aws-apigatewayv2-integrations": "^1.95.2",
     "@aws-cdk/aws-lambda": "^1.95.2",
+    "@aws-cdk/aws-s3-assets": "^1.95.2",
     "@aws-cdk/core": "^1.95.2",
     "@types/execa": "^2.0.0",
     "@types/fs-extra": "^9.0.13",
@@ -72,6 +74,7 @@
   },
   "peerDependencies": {
     "@aws-cdk/aws-lambda": "^1.95.2",
+    "@aws-cdk/aws-s3-assets": "^1.95.2",
     "@aws-cdk/core": "^1.95.2",
     "constructs": "^3.2.27"
   },

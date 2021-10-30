@@ -21,6 +21,11 @@
       "type": "build"
     },
     {
+      "name": "@aws-cdk/aws-s3-assets",
+      "version": "^1.95.2",
+      "type": "build"
+    },
+    {
       "name": "@aws-cdk/core",
       "version": "^1.95.2",
       "type": "build"
@@ -166,6 +171,11 @@
     },
     {
       "name": "@aws-cdk/aws-lambda",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-s3-assets",
       "version": "^1.95.2",
       "type": "peer"
     },
