@@ -6,8 +6,8 @@ the Lambda environment without single-file bundling.
 
 ## Yarn Workspace Function
 
-This construct provides a basic lambda function from a yarn workspace. Your
-compiled code and dependencies are staged and trimmed down using yarn's
+`YarnWorkspaceFunction` provides a basic lambda function from a yarn workspace.
+Your compiled code and dependencies are staged and trimmed down using yarn's
 `workspace-tools` plugin and `yarn workspaces focus` command.
 
 <!-- <macro exec="lit-snip ./test/integ.workspace-focus.ts"> -->
@@ -57,10 +57,10 @@ Example project structure:
 
 ## Use yarn.BUILD
 
-This construct provides a more robust out-of-the-box experience through the
-[yarn.BUILD](https://yarn.build/) yarn plugin. In addition to bundling code
-from a yarn workspace, this construct allows you to run yarn.BUILD's build
-command during construct synthesis. 
+The `YarnBuildFunction` construct provides a more robust out-of-the-box
+experience through the [yarn.BUILD](https://yarn.build/) yarn plugin. In
+addition to bundling code from a yarn workspace, this construct allows you
+to run yarn.BUILD's build command during construct synthesis.
 
 <!-- <macro exec="lit-snip ./test/integ.yarn-build.ts"> -->
 ```ts
