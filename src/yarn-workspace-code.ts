@@ -59,6 +59,7 @@ export class YarnWorkspaceCode extends lambda.Code {
   }
 }
 
+/** @internal */
 export interface PrepareFocusedWorkspaceOptions {
   readonly projectRoot: string;
   readonly workspace: string;
