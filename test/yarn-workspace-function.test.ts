@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
 import { YarnWorkspaceFunction } from '../src';
-import { TEST_APP_PATH } from '../src/constants';
+import { TEST_APP_PATH } from '../src/test-app';
 
 test('creating a function', () => {
   const stack = new cdk.Stack();

@@ -1,7 +1,7 @@
 import * as os from 'os';
 import * as path from 'path';
-import { TEST_APP_PATH } from '../src/constants';
 import { getProjectRoot, getWorkspacePath } from '../src/pnp-util';
+import { TEST_APP_PATH } from '../src/test-app';
 
 test('get workspace path', () => {
   const workspace = 'lambda';
