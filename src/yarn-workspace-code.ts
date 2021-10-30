@@ -81,6 +81,7 @@ export function stageDeps(options: StageDepsOptions): string {
     '.yarnrc.yml',
     'package.json',
     '**/package.json',
+    '!**/cdk.out',
   ];
   const fileList = globby.sync(patterns, {
     cwd: source,

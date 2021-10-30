@@ -38,6 +38,12 @@ test('staging deps', () => {
       expect.stringContaining('.yarn/cache'),
     ]),
   );
+
+  expect(stagedFileList).not.toEqual(
+    expect.arrayContaining([
+      expect.stringContaining('cdk.out'),
+    ]),
+  );
 });
 
 test('focusing a workspace', () => {
