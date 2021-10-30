@@ -85,8 +85,8 @@ for (const ignore of ignores) {
   project.npmignore.addPatterns(ignore);
 }
 
-project.package.setScript('integ:workspace-focus', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.workspace-focus.ts"');
 project.package.setScript('integ:yarn-build', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.yarn-build.ts"');
+project.package.setScript('integ:yarn-workspace', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.yarn-workspace.ts"');
 
 const macros = project.addTask('readme-macros');
 macros.exec('shx mv README.md README.md.bak');
