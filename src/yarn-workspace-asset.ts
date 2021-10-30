@@ -35,7 +35,7 @@ export class YarnWorkspaceAsset extends cdk.Construct {
       throw new Error('Cannot add pnp code by stage without an app');
     }
 
-    const workspaceCache = focusWorkspace({
+    const focusedWorkspaceCache = focusWorkspace({
       projectRoot,
       workspace,
       cacheDirectory: path.join(app.assetOutdir, '.pnp-cache'),
@@ -43,29 +43,59 @@ export class YarnWorkspaceAsset extends cdk.Construct {
 
     const assetStaging = new s3_assets.Asset(this, 'Code', {
       assetHashType: cdk.AssetHashType.OUTPUT,
-      path: workspaceCache,
+      path: focusedWorkspaceCache,
       bundling: {
         image: cdk.DockerImage.fromRegistry('NEVER'),
-        local: {
-          tryBundle: (outputDir: string, _options: cdk.BundlingOptions): boolean => {
-            fs.copySync(workspaceCache, outputDir, {
-              recursive: true,
-            });
-
-            mergeProject({
-              assetDirectory: outputDir,
-              projectRoot: projectRoot,
-            });
-
-            return true;
-          },
-        },
+        local: new YarnWorkspaceLocalBundling({
+          focusedWorkspaceCache,
+          projectRoot,
+        }),
       },
     });
 
     this.assetPath = assetStaging.assetPath;
     this.s3BucketName = assetStaging.s3BucketName;
     this.s3ObjectKey = assetStaging.s3ObjectKey;
+  }
+}
+
+interface YarnWorkspaceLocalBundlingOptions {
+  readonly projectRoot: string;
+  readonly focusedWorkspaceCache: string;
+}
+
+class YarnWorkspaceLocalBundling implements cdk.ILocalBundling {
+  private readonly projectRoot: string;
+  private readonly focusedWorkspaceCache: string;
+
+  constructor(options: YarnWorkspaceLocalBundlingOptions) {
+    this.projectRoot = options.projectRoot;
+    this.focusedWorkspaceCache = options.focusedWorkspaceCache;
+  }
+
+  tryBundle(outputDir: string, _options: cdk.BundlingOptions): boolean {
+    fs.copySync(this.focusedWorkspaceCache, outputDir, {
+      recursive: true,
+    });
+
+    const files = ignorewalk.sync({
+      path: this.projectRoot,
+      ignoreFiles: ['.npmignore'],
+      includeEmpty: false,
+    });
+
+    const badFiles = new Set(['.yarnrc.yml', '.pnp.cjs']);
+    for (const file of files) {
+      if (file.startsWith('.yarn') || badFiles.has(file)) {
+        continue;
+      }
+
+      const projectPath = path.join(this.projectRoot, file);
+      const outputPath = path.join(outputDir, file);
+      fs.copySync(projectPath, outputPath);
+    }
+
+    return true;
   }
 }
 
@@ -122,28 +152,3 @@ export function focusWorkspace(options: PrepareFocusedWorkspaceOptions) {
     }
   }
 }
-
-/** @internal */
-export interface MergeProjectOptions {
-  readonly assetDirectory: string;
-  readonly projectRoot: string;
-}
-
-/** @internal */
-export function mergeProject(options: MergeProjectOptions): void {
-  const files = ignorewalk.sync({
-    path: options.projectRoot,
-    ignoreFiles: ['.npmignore'],
-    includeEmpty: false,
-  });
-
-  const badFiles = new Set(['.yarnrc.yml', '.pnp.cjs']);
-  for (const file of files) {
-    if (file.startsWith('.yarn') || badFiles.has(file)) {
-      continue;
-    }
-
-    fs.copySync(path.join(options.projectRoot, file), path.join(options.assetDirectory, file));
-  }
-}
-
