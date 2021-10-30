@@ -26,25 +26,29 @@ export class YarnWorkspaceAsset extends cdk.Construct {
     const projectRoot = props.projectRoot;
     const workspace = props.workspace;
 
+    if (!fs.existsSync(path.join(projectRoot, 'yarn.lock'))) {
+      throw new Error(`The given project root ${projectRoot} does not contain a yarn.lock!`);
+    }
+
     const app = cdk.App.of(scope);
     if (!app) {
       throw new Error('Cannot add pnp code by stage without an app');
     }
 
-    const focusedWorkspacePath = focusWorkspace({
-      projectRoot: projectRoot,
-      workspace: workspace,
+    const workspaceCache = focusWorkspace({
+      projectRoot,
+      workspace,
       cacheDirectory: path.join(app.assetOutdir, '.pnp-cache'),
     });
 
     const assetStaging = new s3_assets.Asset(this, 'Code', {
       assetHashType: cdk.AssetHashType.OUTPUT,
-      path: focusedWorkspacePath,
+      path: workspaceCache,
       bundling: {
         image: cdk.DockerImage.fromRegistry('NEVER'),
         local: {
           tryBundle: (outputDir: string, _options: cdk.BundlingOptions): boolean => {
-            fs.copySync(focusedWorkspacePath, outputDir, {
+            fs.copySync(workspaceCache, outputDir, {
               recursive: true,
             });
 
@@ -74,8 +78,6 @@ export interface PrepareFocusedWorkspaceOptions {
 
 /** @internal */
 export function focusWorkspace(options: PrepareFocusedWorkspaceOptions) {
-  checkProjectRoot(options.projectRoot);
-
   const depsStagingPath = fs.mkdtempSync(path.join(os.tmpdir(), '.pnp-code'));
   try {
     // Stage the files yarn needs to install packages.
@@ -129,8 +131,6 @@ export interface MergeProjectOptions {
 
 /** @internal */
 export function mergeProject(options: MergeProjectOptions): void {
-  checkProjectRoot(options.projectRoot);
-
   const files = ignorewalk.sync({
     path: options.projectRoot,
     ignoreFiles: ['.npmignore'],
@@ -147,9 +147,3 @@ export function mergeProject(options: MergeProjectOptions): void {
   }
 }
 
-/** @internal */
-function checkProjectRoot(projectRoot: string) {
-  if (!fs.existsSync(path.join(projectRoot, 'yarn.lock'))) {
-    throw new Error(`The given project root ${projectRoot} does not contain a yarn.lock!`);
-  }
-}

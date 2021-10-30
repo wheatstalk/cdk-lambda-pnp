@@ -4,12 +4,11 @@ import * as cdk from '@aws-cdk/core';
 import * as execa from 'execa';
 import * as fs from 'fs-extra';
 import * as globby from 'globby';
-import { TEST_APP_PATH } from '../src/test-app';
+import { buildTestApp, TEST_APP_PATH } from '../src/test-app';
 import { YarnWorkspaceAsset } from '../src/yarn-workspace-asset';
 
 beforeAll(() => {
-  execa.sync('yarn', ['install'], { cwd: TEST_APP_PATH });
-  execa.sync('yarn', ['build'], { cwd: TEST_APP_PATH });
+  buildTestApp();
 });
 
 test('creating a yarn workspace asset', () => {
