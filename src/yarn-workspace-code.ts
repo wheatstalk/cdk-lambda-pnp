@@ -4,27 +4,27 @@ import { YarnWorkspaceAsset } from './yarn-workspace-asset';
 
 /** @internal */
 export interface YarnWorkspaceCodeOptions {
-  readonly projectRoot: string;
+  readonly projectPath: string;
   readonly workspace: string;
 }
 
 /** @internal */
 export class YarnWorkspaceCode extends lambda.Code {
   readonly isInline = false;
-  private readonly projectRoot: string;
+  private readonly projectPath: string;
   private readonly workspace: string;
 
   constructor(options: YarnWorkspaceCodeOptions) {
     super();
 
-    this.projectRoot = options.projectRoot;
+    this.projectPath = options.projectPath;
     this.workspace = options.workspace;
   }
 
   bind(scope: cdk.Construct): lambda.CodeConfig {
     const asset = new YarnWorkspaceAsset(scope, 'Asset', {
       workspace: this.workspace,
-      projectRoot: this.projectRoot,
+      projectPath: this.projectPath,
     });
 
     return {

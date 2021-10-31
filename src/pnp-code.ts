@@ -9,9 +9,9 @@ export abstract class PnpCode {
   /**
    * Create lambda code with the yarn.build plugin.
    */
-  static fromYarnBuild(projectRoot: string, workspace: string, options: YarnBuildOptions = {}): lambda.Code {
+  static fromYarnBuild(projectPath: string, workspace: string, options: YarnBuildOptions = {}): lambda.Code {
     return new YarnBuildCode({
-      projectRoot,
+      projectPath,
       workspace,
       ...options,
     });
@@ -20,9 +20,9 @@ export abstract class PnpCode {
   /**
    * Create lambda code by using `yarn workspaces focus`.
    */
-  static fromYarnWorkspace(projectRoot: string, workspace: string): lambda.Code {
+  static fromYarnWorkspace(projectPath: string, workspace: string): lambda.Code {
     return new YarnWorkspaceCode({
-      projectRoot,
+      projectPath,
       workspace,
     });
   }

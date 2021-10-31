@@ -20,7 +20,7 @@ test('creating a yarn workspace asset', () => {
 
   // WHEN
   const asset = new YarnWorkspaceAsset(stack, 'Asset', {
-    projectRoot: TEST_APP_PATH,
+    projectPath: TEST_APP_PATH,
     workspace: 'lambda',
   });
 
@@ -61,7 +61,7 @@ test('running the code in a yarn workspace asset', () => {
   });
   const stack = new cdk.Stack(app, 'Stack');
   const asset = new YarnWorkspaceAsset(stack, 'Asset', {
-    projectRoot: TEST_APP_PATH,
+    projectPath: TEST_APP_PATH,
     workspace: 'lambda',
   });
 
@@ -93,11 +93,11 @@ test('identical assets have the same asset path', () => {
 
   // WHEN
   const asset1 = new YarnWorkspaceAsset(stack, 'Asset1', {
-    projectRoot: TEST_APP_PATH,
+    projectPath: TEST_APP_PATH,
     workspace: 'lambda',
   });
   const asset2 = new YarnWorkspaceAsset(stack, 'Asset2', {
-    projectRoot: TEST_APP_PATH,
+    projectPath: TEST_APP_PATH,
     workspace: 'lambda',
   });
 
@@ -114,11 +114,11 @@ test('different workspaces in the same project have different assets', () => {
 
   // WHEN
   const asset1 = new YarnWorkspaceAsset(stack, 'Asset1', {
-    projectRoot: TEST_APP_PATH,
+    projectPath: TEST_APP_PATH,
     workspace: 'lambda',
   });
   const asset2 = new YarnWorkspaceAsset(stack, 'Asset2', {
-    projectRoot: TEST_APP_PATH,
+    projectPath: TEST_APP_PATH,
     workspace: 'lib',
   });
 

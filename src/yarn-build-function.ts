@@ -29,22 +29,20 @@ export class YarnBuildFunction extends lambda.Function {
   constructor(scope: cdk.Construct, id: string, props: YarnBuildFunctionProps) {
     const projectPath = props.projectPath ?? process.cwd();
 
+    const environment = {
+      ...(props.environment ?? {}),
+      NODE_OPTIONS: '--require ./bundle/.pnp.cjs',
+    };
+
     const workspacePath = getWorkspacePath({
       workspace: props.workspace,
       cwd: projectPath,
     });
 
-    const code = PnpCode.fromYarnBuild(projectPath, props.workspace, props);
-
-    const environment = {
-      ...(props.environment ?? {}),
-      NODE_OPTIONS: '--require bundle/.pnp.cjs',
-    };
-
     super(scope, id, {
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: code,
+      code: PnpCode.fromYarnBuild(projectPath, props.workspace, props),
       handler: `bundle/${workspacePath}/${props.handler}`,
       environment,
     });

@@ -1,7 +1,7 @@
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
 import { PnpCode } from './pnp-code';
-import { getProjectRoot, getWorkspacePath } from './pnp-util';
+import { getWorkspacePath } from './pnp-util';
 
 export interface YarnWorkspaceFunctionProps extends lambda.FunctionOptions {
   /**
@@ -28,24 +28,20 @@ export class YarnWorkspaceFunction extends lambda.Function {
   constructor(scope: cdk.Construct, id: string, props: YarnWorkspaceFunctionProps) {
     const projectPath = props.projectPath ?? process.cwd();
 
-    const projectRoot = getProjectRoot(projectPath);
-
-    const code = PnpCode.fromYarnWorkspace(projectRoot, props.workspace);
-
     const environment = {
       ...(props.environment ?? {}),
-      NODE_OPTIONS: '--require .pnp.cjs',
+      NODE_OPTIONS: '--require ./.pnp.cjs',
     };
 
     const workspacePath = getWorkspacePath({
+      cwd: projectPath,
       workspace: props.workspace,
-      cwd: projectRoot,
     });
 
     super(scope, id, {
       ...props,
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: code,
+      code: PnpCode.fromYarnWorkspace(projectPath, props.workspace),
       handler: `${workspacePath}/${props.handler}`,
       environment,
     });
