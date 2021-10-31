@@ -3,13 +3,13 @@ import * as execa from 'execa';
 import * as fs from 'fs-extra';
 
 /** @internal */
-export interface GetWorkspaceRootOptions {
+export interface GetWorkspacePathOptions {
   readonly workspace: string;
   readonly cwd?: string;
 }
 
 /** @internal */
-export function getWorkspacePath(options: GetWorkspaceRootOptions): string {
+export function getWorkspacePath(options: GetWorkspacePathOptions): string {
   const cwd = options.cwd ?? process.cwd();
 
   const infoRes = execa.sync('yarn', ['workspace', options.workspace, 'info', '--name-only', '--json'], {

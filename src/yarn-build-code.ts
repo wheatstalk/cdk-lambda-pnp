@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
 import * as execa from 'execa';
+import { getProjectRoot } from './pnp-util';
 
 export interface YarnBuildOptions {
   /**
@@ -21,7 +22,7 @@ export interface YarnBuildOptions {
 
 /** @internal */
 export interface YarnBuildCodeOptions extends YarnBuildOptions {
-  readonly projectRoot: string;
+  readonly projectPath: string;
   readonly workspace: string;
 }
 
@@ -33,12 +34,12 @@ export class YarnBuildCode extends lambda.Code {
   constructor(options: YarnBuildCodeOptions) {
     super();
 
-    const cwd = options.projectRoot;
+    const projectRoot = getProjectRoot(options.projectPath);
     const runInstall = options.runInstall ?? false;
     const runBuild = options.runBuild ?? false;
 
     const execaBaseOptions: execa.SyncOptions = {
-      cwd,
+      cwd: projectRoot,
     };
 
     const versionRes = execa.sync('yarn', ['--version'], execaBaseOptions);

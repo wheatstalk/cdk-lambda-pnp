@@ -7,10 +7,11 @@ import * as execa from 'execa';
 import * as fs from 'fs-extra';
 import * as globby from 'globby';
 import * as ignorewalk from 'ignore-walk';
+import { getProjectRoot } from './pnp-util';
 
 /** @internal */
 export interface YarnWorkspaceAssetProps {
-  readonly projectRoot: string;
+  readonly projectPath: string;
   readonly workspace: string;
 }
 
@@ -23,7 +24,7 @@ export class YarnWorkspaceAsset extends cdk.Construct {
   constructor(scope: cdk.Construct, id: string, props: YarnWorkspaceAssetProps) {
     super(scope, id);
 
-    const projectRoot = props.projectRoot;
+    const projectRoot = getProjectRoot(props.projectPath);
     const workspace = props.workspace;
 
     if (!fs.existsSync(path.join(projectRoot, 'yarn.lock'))) {

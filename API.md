@@ -1322,10 +1322,10 @@ new PnpCode()
 ```typescript
 import { PnpCode } from '@wheatstalk/cdk-lambda-pnp'
 
-PnpCode.fromYarnBuild(projectRoot: string, workspace: string, options?: YarnBuildOptions)
+PnpCode.fromYarnBuild(projectPath: string, workspace: string, options?: YarnBuildOptions)
 ```
 
-###### `projectRoot`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.projectRoot"></a>
+###### `projectPath`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.projectPath"></a>
 
 - *Type:* `string`
 
@@ -1348,10 +1348,10 @@ PnpCode.fromYarnBuild(projectRoot: string, workspace: string, options?: YarnBuil
 ```typescript
 import { PnpCode } from '@wheatstalk/cdk-lambda-pnp'
 
-PnpCode.fromYarnWorkspace(projectRoot: string, workspace: string)
+PnpCode.fromYarnWorkspace(projectPath: string, workspace: string)
 ```
 
-###### `projectRoot`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.projectRoot"></a>
+###### `projectPath`<sup>Required</sup> <a name="@wheatstalk/cdk-lambda-pnp.PnpCode.parameter.projectPath"></a>
 
 - *Type:* `string`
 
