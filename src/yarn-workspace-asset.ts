@@ -17,13 +17,8 @@ export interface YarnWorkspaceAssetProps {
 }
 
 /** @internal */
-export class YarnWorkspaceAsset extends cdk.Construct {
-  public readonly s3BucketName: string;
-  public readonly s3ObjectKey: string;
-  public readonly assetPath: string;
-
+export class YarnWorkspaceAsset extends s3_assets.Asset {
   constructor(scope: cdk.Construct, id: string, props: YarnWorkspaceAssetProps) {
-    super(scope, id);
 
     const projectRoot = getProjectRoot(props.projectPath);
     const workspace = props.workspace;
@@ -37,65 +32,59 @@ export class YarnWorkspaceAsset extends cdk.Construct {
       throw new Error('Cannot add pnp code by stage without an app');
     }
 
+    const workDirectory = path.join(app.assetOutdir, '.pnp');
+
+    const yarnWorkspaceLocalBundling = new YarnWorkspaceBundler({
+      workDirectory,
+    });
+
+    const assetDir = yarnWorkspaceLocalBundling.bundle(projectRoot, workspace);
+
+    super(scope, id, {
+      path: assetDir,
+    });
+  }
+}
+
+interface YarnWorkspaceBundlerOptions {
+  readonly workDirectory: string;
+}
+
+class YarnWorkspaceBundler {
+  private readonly workDirectory: string;
+
+  constructor(options: YarnWorkspaceBundlerOptions) {
+    this.workDirectory = options.workDirectory;
+  }
+
+  public bundle(projectRoot: string, workspace: string) {
     const focusedWorkspaceCache = focusWorkspace({
       projectRoot,
       workspace,
-      cacheDirectory: path.join(app.assetOutdir, '.pnp-cache'),
+      cacheDirectory: this.workDirectory,
     });
 
-    const assetStaging = new s3_assets.Asset(this, 'Code', {
-      assetHashType: cdk.AssetHashType.OUTPUT,
-      path: focusedWorkspaceCache,
-      bundling: {
-        image: cdk.DockerImage.fromRegistry('NEVER'),
-        local: new YarnWorkspaceLocalBundling({
-          focusedWorkspaceCache,
-          projectRoot,
-        }),
-      },
-    });
-
-    this.assetPath = assetStaging.assetPath;
-    this.s3BucketName = assetStaging.s3BucketName;
-    this.s3ObjectKey = assetStaging.s3ObjectKey;
-  }
-}
-
-interface YarnWorkspaceLocalBundlingOptions {
-  readonly projectRoot: string;
-  readonly focusedWorkspaceCache: string;
-}
-
-class YarnWorkspaceLocalBundling implements cdk.ILocalBundling {
-  private readonly projectRoot: string;
-  private readonly focusedWorkspaceCache: string;
-
-  constructor(options: YarnWorkspaceLocalBundlingOptions) {
-    this.projectRoot = options.projectRoot;
-    this.focusedWorkspaceCache = options.focusedWorkspaceCache;
-  }
-
-  tryBundle(outputDir: string, _options: cdk.BundlingOptions): boolean {
-    fs.copySync(this.focusedWorkspaceCache, outputDir, {
+    const assetDir = fs.mkdtempSync(path.join(this.workDirectory, 'asset'));
+    fs.copySync(focusedWorkspaceCache, assetDir, {
       recursive: true,
     });
 
     // Find a list of files that aren't ignored by .npmignore files
     const files = ignorewalk.sync({
-      path: this.projectRoot,
+      path: projectRoot,
       ignoreFiles: ['.npmignore'],
       includeEmpty: false,
     });
 
-    // Futher filter the list of files to copy to the asset.
+    // Further filter the list of files to copy to the asset.
     const ig = ignore().add(MERGE_IGNORE_PATTERNS);
     for (const file of ig.filter(files)) {
-      const projectPath = path.join(this.projectRoot, file);
-      const outputPath = path.join(outputDir, file);
+      const projectPath = path.join(projectRoot, file);
+      const outputPath = path.join(assetDir, file);
       fs.copySync(projectPath, outputPath);
     }
 
-    return true;
+    return assetDir;
   }
 }
 

@@ -13,6 +13,7 @@ export class YarnWorkspaceCode extends lambda.Code {
   readonly isInline = false;
   private readonly projectPath: string;
   private readonly workspace: string;
+  private asset?: YarnWorkspaceAsset;
 
   constructor(options: YarnWorkspaceCodeOptions) {
     super();
@@ -27,11 +28,24 @@ export class YarnWorkspaceCode extends lambda.Code {
       projectPath: this.projectPath,
     });
 
+    this.asset = asset;
+
     return {
       s3Location: {
         bucketName: asset.s3BucketName,
         objectKey: asset.s3ObjectKey,
       },
     };
+  }
+
+  public bindToResource(resource: cdk.CfnResource, options: lambda.ResourceBindOptions = { }) {
+    if (!this.asset) {
+      throw new Error('bindToResource() must be called after bind()');
+    }
+
+    const resourceProperty = options.resourceProperty || 'Code';
+
+    // https://github.com/aws/aws-cdk/issues/1432
+    this.asset.addResourceMetadata(resource, resourceProperty);
   }
 }
