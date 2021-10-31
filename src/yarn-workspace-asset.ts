@@ -5,7 +5,8 @@ import * as cdk from '@aws-cdk/core';
 import { fingerprint } from '@aws-cdk/core/lib/fs/fingerprint';
 import * as execa from 'execa';
 import * as fs from 'fs-extra';
-import * as globby from 'globby';
+import * as glob from 'glob';
+import ignore from 'ignore';
 import * as ignorewalk from 'ignore-walk';
 import { getProjectRoot } from './pnp-util';
 
@@ -79,18 +80,16 @@ class YarnWorkspaceLocalBundling implements cdk.ILocalBundling {
       recursive: true,
     });
 
+    // Find a list of files that aren't ignored by .npmignore files
     const files = ignorewalk.sync({
       path: this.projectRoot,
       ignoreFiles: ['.npmignore'],
       includeEmpty: false,
     });
 
-    const badFiles = new Set(['.yarnrc.yml', '.pnp.cjs']);
-    for (const file of files) {
-      if (file.startsWith('.yarn') || badFiles.has(file)) {
-        continue;
-      }
-
+    // Futher filter the list of files to copy to the asset.
+    const ig = ignore().add(MERGE_IGNORE_PATTERNS);
+    for (const file of ig.filter(files)) {
       const projectPath = path.join(this.projectRoot, file);
       const outputPath = path.join(outputDir, file);
       fs.copySync(projectPath, outputPath);
@@ -112,25 +111,19 @@ export function focusWorkspace(options: PrepareFocusedWorkspaceOptions) {
   const depsStagingPath = fs.mkdtempSync(path.join(os.tmpdir(), '.pnp-code'));
   try {
     // Stage the files yarn needs to install packages.
-    const patterns = [
-      '.yarn/patches',
-      '.yarn/plugins',
-      '.yarn/releases',
-      '.yarn/sdks',
-      '.yarn/versions',
-      '.yarnrc.yml',
-      'yarn.lock',
-      'package.json',
-      '**/package.json',
-      '!**/cdk.out',
-    ];
-    const fileList = globby.sync(patterns, {
+    const yarnFileIgnore = ignore().add(YARN_DEP_PATTERNS);
+    const fileList = glob.sync('**', {
       cwd: options.projectRoot,
-      globstar: true,
-      onlyFiles: true,
+      dot: true,
+      mark: true,
     });
 
     for (const file of fileList) {
+      // We're looking for files matching the ignore pattern above.
+      if (!yarnFileIgnore.test(file).ignored) {
+        continue;
+      }
+
       fs.copySync(path.join(options.projectRoot, file), path.join(depsStagingPath, file), {
         recursive: true,
       });
@@ -153,3 +146,25 @@ export function focusWorkspace(options: PrepareFocusedWorkspaceOptions) {
     }
   }
 }
+
+// Files needed for yarn to install the right deps.
+const YARN_DEP_PATTERNS = [
+  '/.yarn/patches/**',
+  '/.yarn/plugins/**',
+  '/.yarn/releases/**',
+  '/.yarn/sdks/**',
+  '/.yarn/versions/**',
+  '/.yarnrc.yml',
+  '/yarn.lock',
+  '/package.json',
+  '**/package.json',
+  '!**/cdk.out/**/package.json',
+];
+
+// Files to always ignore when merging the user's project into the asset.
+const MERGE_IGNORE_PATTERNS = [
+  ...YARN_DEP_PATTERNS,
+  '/.git',
+  '/.yarn',
+  '/.pnp.cjs',
+];

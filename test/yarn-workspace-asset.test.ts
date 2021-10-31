@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
 import * as execa from 'execa';
 import * as fs from 'fs-extra';
-import * as globby from 'globby';
+import * as glob from 'glob';
 import { buildTestApp, TEST_APP_PATH } from '../src/test-app';
 import { YarnWorkspaceAsset } from '../src/yarn-workspace-asset';
 
@@ -25,32 +25,39 @@ test('creating a yarn workspace asset', () => {
   });
 
   // THEN
-  const res = globby.sync(['**', '.*/**'], {
+  const res = glob.sync('**', {
+    dot: true,
+    nodir: true,
     cwd: path.join(outdir, asset.assetPath),
   });
-  expect(res).toEqual([
+  expect(res.sort()).toEqual([
+    '.gitignore',
+    '.pnp.cjs',
+    '.yarn/cache/.gitignore',
+    '.yarn/cache/uglify-js-npm-3.14.2-a003e21395-4d8e5c63b2.zip',
+    '.yarn/install-state.gz',
+    '.yarn/plugins/@ojkelly/plugin-build.cjs',
+    '.yarn/plugins/@yarnpkg/plugin-workspace-tools.cjs',
+    '.yarn/releases/yarn-berry.cjs',
+    '.yarnrc.yml',
     'package.json',
-    'yarn.lock',
-    'packages/lambda/package.json',
-    'packages/lambda/tsconfig.dev.json',
-    'packages/lib/package.json',
-    'packages/lib/tsconfig.dev.json',
+    'packages/lambda/.npmignore',
     'packages/lambda/dist/api.d.ts',
     'packages/lambda/dist/api.js',
     'packages/lambda/dist/api2.d.ts',
     'packages/lambda/dist/api2.js',
+    'packages/lambda/package.json',
     'packages/lambda/src/api.ts',
     'packages/lambda/src/api2.ts',
+    'packages/lambda/tsconfig.dev.json',
     'packages/lib/dist/index.d.ts',
     'packages/lib/dist/index.js',
+    'packages/lib/package.json',
     'packages/lib/src/index.d.ts',
     'packages/lib/src/index.js',
     'packages/lib/src/index.ts',
-    '.yarn/install-state.gz',
-    '.yarn/cache/uglify-js-npm-3.14.2-a003e21395-4d8e5c63b2.zip',
-    '.yarn/releases/yarn-berry.cjs',
-    '.yarn/plugins/@ojkelly/plugin-build.cjs',
-    '.yarn/plugins/@yarnpkg/plugin-workspace-tools.cjs',
+    'packages/lib/tsconfig.dev.json',
+    'yarn.lock',
   ]);
 });
 

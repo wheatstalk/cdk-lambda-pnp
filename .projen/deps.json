@@ -161,8 +161,11 @@
       "type": "bundled"
     },
     {
-      "name": "globby",
-      "version": "^11.0.4",
+      "name": "glob",
+      "type": "bundled"
+    },
+    {
+      "name": "ignore",
       "type": "bundled"
     },
     {

@@ -39,7 +39,8 @@ const project = new pj.AwsCdkConstructLibrary({
   bundledDeps: [
     'execa',
     'fs-extra',
-    'globby@^11.0.4',
+    'glob',
+    'ignore',
     'ignore-walk',
   ],
 
@@ -49,9 +50,10 @@ const project = new pj.AwsCdkConstructLibrary({
   ],
 
   devDeps: [
-    '@types/ignore-walk',
     '@types/execa',
     '@types/fs-extra',
+    '@types/glob',
+    '@types/ignore-walk',
     'ts-node',
     'aws-cdk',
     'markmac@^0.1',
