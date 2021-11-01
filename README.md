@@ -1,3 +1,7 @@
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/wheatstalk/cdk-lambda-pnp/build)
+[![npm](https://img.shields.io/npm/v/@wheatstalk/cdk-lambda-pnp)](https://www.npmjs.com/package/@wheatstalk/cdk-lambda-pnp)
+[![construct hub link](https://img.shields.io/badge/link-construct%20hub-blue)](https://constructs.dev/packages/@wheatstalk/cdk-lambda-pnp)
+
 # CDK Lambda PnP Functions
 
 This CDK library allows you to bundle and deploy your AWS Lambda functions
@@ -6,6 +10,7 @@ the Lambda environment without single-file bundling.
 
 **Features**
 
+* Bundles yarn workspaces and their dependencies so that you can use Yarn PnP in AWS Lambda.
 * Smaller node dependency file sizes due to PnP compression
 * First-class support for [`yarn workspaces focus`][yarn-workspaces-focus] and [`yarn.BUILD`](yarn-build)
 * CDK hotswap compatibility to speed up your inner loop
