@@ -1378,9 +1378,9 @@
     eslint-visitor-keys "^3.0.0"
 
 "@wheatstalk/lit-snip@^0.0":
-  version "0.0.74"
-  resolved "https://registry.yarnpkg.com/@wheatstalk/lit-snip/-/lit-snip-0.0.74.tgz#7eed1c76fae4296008c988e341fdf6c2051f14d2"
-  integrity sha512-CZF5/wMzvi5MBgfLL2XILsPvjaCD8UZtPlTrRzEvTJ/T7b2G6eUzwsjLn/2Aos6K48DMvOxOH+/h5gi4oaeoHQ==
+  version "0.0.75"
+  resolved "https://registry.yarnpkg.com/@wheatstalk/lit-snip/-/lit-snip-0.0.75.tgz#223cd47614c5255c5f98509d831dd98b56b8d1fa"
+  integrity sha512-UXS8CEZDIF3P5K7mFv+b85YdReXlU7IHv85CWeCXUVlG3LAuTjiwVlsdCInLMNd2n2QsYEgjzFU9KVqIfezvwg==
 
 "@xmldom/xmldom@^0.7.5":
   version "0.7.5"
@@ -5154,9 +5154,9 @@ map-obj@^4.0.0:
   integrity sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==
 
 markmac@^0.1:
-  version "0.1.76"
-  resolved "https://registry.yarnpkg.com/markmac/-/markmac-0.1.76.tgz#e016612d5afd95a5beef06b98c3c495109effcb6"
-  integrity sha512-wR4kbITpZonMkK4YsJePY8UP6JkZsFtExQA92Tpu254X+8+xkCGnO6ZvPd0cHYjNAMtfga8Weh4pGBw/N0s5SA==
+  version "0.1.77"
+  resolved "https://registry.yarnpkg.com/markmac/-/markmac-0.1.77.tgz#7de6041341c8dd4ad11e8bad6e31b733824f14c9"
+  integrity sha512-X4DIqKD4kt8sCY3cb80k8M59/c5JQsBgtGqNPMaiGoXhrjbN54HqtDRaoIKeZKpGuO9f+VcJwUVwMf6sF4V3eg==
 
 md5@^2.3.0:
   version "2.3.0"
@@ -5943,10 +5943,10 @@ progress@^2.0.0, progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.31.18:
-  version "0.31.18"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.31.18.tgz#99dfff0cf4a03914e104d5c4b824c5b0e851bdd5"
-  integrity sha512-ZuuNTJzzv9lBG/GLoxoawXe8jgIPPC1n6Mvd1r6fGCJRogbRBuvsjqykkXvxxHa/slwCSBgwWxclP0o+MOO9NA==
+projen@^0.31.19:
+  version "0.31.19"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.31.19.tgz#46b1179ae8afd89006a5f49a1c8bb108fdb21101"
+  integrity sha512-St6KbzkzjiB5EW8gTUa+x1awj2TotxWPuwoGrwCqtQWIWkyxuK7VY/4ydiTbLEf1JgV318gDd7+vk5/tdR0uWA==
   dependencies:
     "@iarna/toml" "^2.2.5"
     chalk "^4.1.2"
