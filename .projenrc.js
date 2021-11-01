@@ -7,7 +7,7 @@ const project = new pj.AwsCdkConstructLibrary({
   defaultReleaseBranch: 'main',
   name: '@wheatstalk/cdk-lambda-pnp',
   repositoryUrl: 'https://github.com/wheatstalk/cdk-lambda-pnp.git',
-  description: 'Use yarn.build to build and bundle your AWS Lambda functions',
+  description: 'Deploy your AWS Lambdas from a Yarn PnP workspace using the CDK',
 
   keywords: [
     'cdk',
