@@ -1,6 +1,6 @@
 {
   "name": "@wheatstalk/cdk-lambda-pnp",
-  "description": "Use yarn.build to build and bundle your AWS Lambda functions",
+  "description": "Deploy your AWS Lambdas from a Yarn PnP workspace using the CDK",
   "repository": {
     "type": "git",
     "url": "https://github.com/wheatstalk/cdk-lambda-pnp.git"
