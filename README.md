@@ -12,7 +12,7 @@ the Lambda environment without single-file bundling.
 
 * Bundles yarn workspaces and their dependencies so that you can use Yarn PnP in AWS Lambda.
 * Smaller node dependency file sizes due to PnP compression
-* First-class support for [`yarn workspaces focus`][yarn-workspaces-focus] and [`yarn.BUILD`](yarn-build)
+* First-class support for [`yarn workspaces focus`][yarn-workspaces-focus] and [`yarn.BUILD`][yarn-build]
 * CDK hotswap compatibility to speed up your inner loop
 * Allows you to group related lambda handlers into fewer assets to reduce asset publishing time
 * Bring-your-own typescript compiler (works with tsc, esbuild, and swc.)
