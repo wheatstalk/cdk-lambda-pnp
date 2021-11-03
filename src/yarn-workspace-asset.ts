@@ -5,10 +5,10 @@ import * as cdk from '@aws-cdk/core';
 import { fingerprint } from '@aws-cdk/core/lib/fs/fingerprint';
 import * as execa from 'execa';
 import * as fs from 'fs-extra';
-import * as glob from 'glob';
 import ignore from 'ignore';
-import * as ignorewalk from 'ignore-walk';
 import { getProjectRoot } from './pnp-util';
+import { StopWatch } from './stop-watch';
+import { WalkingIgnore } from './walking-ignore';
 
 /** @internal */
 export interface YarnWorkspaceAssetProps {
@@ -19,7 +19,6 @@ export interface YarnWorkspaceAssetProps {
 /** @internal */
 export class YarnWorkspaceAsset extends s3_assets.Asset {
   constructor(scope: cdk.Construct, id: string, props: YarnWorkspaceAssetProps) {
-
     const projectRoot = getProjectRoot(props.projectPath);
     const workspace = props.workspace;
 
@@ -32,10 +31,8 @@ export class YarnWorkspaceAsset extends s3_assets.Asset {
       throw new Error('Cannot add pnp code by stage without an app');
     }
 
-    const workDirectory = path.join(app.assetOutdir, '.pnp');
-
     const yarnWorkspaceLocalBundling = new YarnWorkspaceBundler({
-      workDirectory,
+      workDirectory: path.join(os.tmpdir(), '.pnp'),
     });
 
     const assetDir = yarnWorkspaceLocalBundling.bundle(projectRoot, workspace);
@@ -58,31 +55,36 @@ class YarnWorkspaceBundler {
   }
 
   public bundle(projectRoot: string, workspace: string) {
+    const stopWatch = StopWatch.start(`Bundling ${workspace}`);
     const focusedWorkspaceCache = focusWorkspace({
       projectRoot,
       workspace,
       cacheDirectory: this.workDirectory,
     });
+    stopWatch.report('workspace focused');
 
     const assetDir = fs.mkdtempSync(path.join(this.workDirectory, 'asset'));
     fs.copySync(focusedWorkspaceCache, assetDir, {
       recursive: true,
     });
+    stopWatch.report('dependencies cloned');
 
-    // Find a list of files that aren't ignored by .npmignore files
-    const files = ignorewalk.sync({
-      path: projectRoot,
-      ignoreFiles: ['.npmignore'],
-      includeEmpty: false,
+    const walkingIgnore = new WalkingIgnore(
+      ignore().add(MERGE_IGNORE_PATTERNS),
+      projectRoot,
+    );
+
+    fs.copySync(projectRoot, assetDir, {
+      recursive: true,
+      filter: (src) => {
+        if (src === projectRoot) {
+          return true;
+        }
+        return !walkingIgnore.test(src).ignored;
+      },
     });
-
-    // Further filter the list of files to copy to the asset.
-    const ig = ignore().add(MERGE_IGNORE_PATTERNS);
-    for (const file of ig.filter(files)) {
-      const projectPath = path.join(projectRoot, file);
-      const outputPath = path.join(assetDir, file);
-      fs.copySync(projectPath, outputPath);
-    }
+    stopWatch.report('workspaces bundled');
+    stopWatch.report();
 
     return assetDir;
   }
@@ -100,23 +102,28 @@ export function focusWorkspace(options: PrepareFocusedWorkspaceOptions) {
   const depsStagingPath = fs.mkdtempSync(path.join(os.tmpdir(), '.pnp-code'));
   try {
     // Stage the files yarn needs to install packages.
-    const yarnFileIgnore = ignore().add(YARN_DEP_PATTERNS);
-    const fileList = glob.sync('**', {
-      cwd: options.projectRoot,
-      dot: true,
-      mark: true,
+    const yarnFileIgnore = ignore().add(YARN_CDK_DEP_PATTERNS);
+    fs.copySync(options.projectRoot, depsStagingPath, {
+      recursive: true,
+      filter: (src) => {
+        const relativePath = path.relative(options.projectRoot, src);
+        if (relativePath === '') {
+          // Always include the project root
+          return true;
+        }
+
+        const result = yarnFileIgnore.test(relativePath);
+
+        const hasNoOpinion = !result.unignored && !result.ignored;
+        if (hasNoOpinion && fs.statSync(src).isDirectory()) {
+          // When ignore has no opinion and we've encountered a directory, we
+          // traverse into it.
+          return true;
+        }
+
+        return result.ignored;
+      },
     });
-
-    for (const file of fileList) {
-      // We're looking for files matching the ignore pattern above.
-      if (!yarnFileIgnore.test(file).ignored) {
-        continue;
-      }
-
-      fs.copySync(path.join(options.projectRoot, file), path.join(depsStagingPath, file), {
-        recursive: true,
-      });
-    }
 
     // Cache dependencies to speed up changes that don't require a yarn install.
     const stageFingerprint = fingerprint(depsStagingPath, { extraHash: options.workspace });
@@ -143,11 +150,17 @@ const YARN_DEP_PATTERNS = [
   '/.yarn/releases/**',
   '/.yarn/sdks/**',
   '/.yarn/versions/**',
+  '!/.yarn/cache',
+  '!/.yarn/unplugged',
   '/.yarnrc.yml',
   '/yarn.lock',
   '/package.json',
   '**/package.json',
-  '!**/cdk.out/**/package.json',
+];
+
+const YARN_CDK_DEP_PATTERNS = [
+  ...YARN_DEP_PATTERNS,
+  '!**/cdk.out',
 ];
 
 // Files to always ignore when merging the user's project into the asset.
@@ -156,4 +169,5 @@ const MERGE_IGNORE_PATTERNS = [
   '/.git',
   '/.yarn',
   '/.pnp.cjs',
+  '**/cdk.out',
 ];

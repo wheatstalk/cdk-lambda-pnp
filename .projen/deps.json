@@ -43,10 +43,6 @@
       "type": "build"
     },
     {
-      "name": "@types/ignore-walk",
-      "type": "build"
-    },
-    {
       "name": "@types/jest",
       "type": "build"
     },
@@ -86,6 +82,10 @@
     },
     {
       "name": "eslint-plugin-import",
+      "type": "build"
+    },
+    {
+      "name": "glob",
       "type": "build"
     },
     {
@@ -161,15 +161,7 @@
       "type": "bundled"
     },
     {
-      "name": "glob",
-      "type": "bundled"
-    },
-    {
       "name": "ignore",
-      "type": "bundled"
-    },
-    {
-      "name": "ignore-walk",
       "type": "bundled"
     },
     {

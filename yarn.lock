@@ -1211,13 +1211,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ignore-walk@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@types/ignore-walk/-/ignore-walk-4.0.0.tgz#95a3e12166cbc14b691341672c142415529a4127"
-  integrity sha512-T5+1xZfSpgIz7FntMveRpKdLWZhPOidwaxVjUjGjyCXsaD2cVFr4a1+qd2HPcsM9qP0XBkg4jC9NdmuD3lZeqQ==
-  dependencies:
-    "@types/node" "*"
-
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
@@ -3791,13 +3784,6 @@ ignore-walk@^3.0.3:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/ignore-walk/-/ignore-walk-3.0.4.tgz#c9a09f69b7c7b479a5d74ac1a3c0d4236d2a6335"
   integrity sha512-PY6Ii8o1jMRA1z4F2hRkH/xN59ox43DavKvD3oDpfurRlOJyAHpifIwpbdv1n4jt4ov0jSpw3kQ4GhJnpBL6WQ==
-  dependencies:
-    minimatch "^3.0.4"
-
-ignore-walk@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/ignore-walk/-/ignore-walk-4.0.1.tgz#fc840e8346cf88a3a9380c5b17933cd8f4d39fa3"
-  integrity sha512-rzDQLaW4jQbh2YrOFlJdCtX8qgJTehFRYiUB2r1osqTeDzV/3+Jh8fz1oAPzUThf3iku8Ds4IDqawI5d8mUiQw==
   dependencies:
     minimatch "^3.0.4"
 
