@@ -1,34 +1,30 @@
 import * as os from 'os';
 import * as path from 'path';
-import * as cdk from '@aws-cdk/core';
+import { fingerprint } from '@aws-cdk/core/lib/fs/fingerprint';
 import * as execa from 'execa';
-import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import { buildTestApp, TEST_APP_PATH } from '../src/test-app';
-import { YarnWorkspaceAsset } from '../src/yarn-workspace-asset';
+import { YarnWorkspaceBundler } from '../src/yarn-workspace-bundler';
+
+const workDirectory = path.join(os.tmpdir(), '.pnp');
 
 beforeAll(() => {
   buildTestApp();
 });
 
 test('creating a yarn workspace asset', () => {
-  const outdir = fs.mkdtempSync(path.join(os.tmpdir(), 'pnp-test'));
-  const app = new cdk.App({
-    outdir: outdir,
+  const bundler = new YarnWorkspaceBundler({
+    workDirectory,
   });
-  const stack = new cdk.Stack(app, 'Stack');
 
   // WHEN
-  const asset = new YarnWorkspaceAsset(stack, 'Asset', {
-    projectPath: TEST_APP_PATH,
-    workspace: 'lambda',
-  });
+  const outDir = bundler.bundle(TEST_APP_PATH, 'lambda');
 
   // THEN
   const res = glob.sync('**', {
     dot: true,
     nodir: true,
-    cwd: path.join(outdir, asset.assetPath),
+    cwd: outDir,
   });
   expect(res.sort()).toEqual([
     '.gitignore',
@@ -62,17 +58,11 @@ test('creating a yarn workspace asset', () => {
 });
 
 test('running the code in a yarn workspace asset', () => {
-  const outdir = fs.mkdtempSync(path.join(os.tmpdir(), 'pnp-test'));
-  const app = new cdk.App({
-    outdir: outdir,
-  });
-  const stack = new cdk.Stack(app, 'Stack');
-  const asset = new YarnWorkspaceAsset(stack, 'Asset', {
-    projectPath: TEST_APP_PATH,
-    workspace: 'lambda',
+  const bundler = new YarnWorkspaceBundler({
+    workDirectory,
   });
 
-  const assetPath = path.join(outdir, asset.assetPath);
+  const assetPath = bundler.bundle(TEST_APP_PATH, 'lambda');
 
   // WHEN
   const execaRes = execa.sync('node', ['packages/lambda/dist/api.js'], {
@@ -91,44 +81,28 @@ test('running the code in a yarn workspace asset', () => {
   );
 });
 
-test('identical assets have the same asset path', () => {
-  const outdir = fs.mkdtempSync(path.join(os.tmpdir(), 'pnp-test'));
-  const app = new cdk.App({
-    outdir: outdir,
+test('identical assets have the same fingerprint', () => {
+  const bundler = new YarnWorkspaceBundler({
+    workDirectory,
   });
-  const stack = new cdk.Stack(app, 'Stack');
 
   // WHEN
-  const asset1 = new YarnWorkspaceAsset(stack, 'Asset1', {
-    projectPath: TEST_APP_PATH,
-    workspace: 'lambda',
-  });
-  const asset2 = new YarnWorkspaceAsset(stack, 'Asset2', {
-    projectPath: TEST_APP_PATH,
-    workspace: 'lambda',
-  });
+  const asset1 = bundler.bundle(TEST_APP_PATH, 'lambda');
+  const asset2 = bundler.bundle(TEST_APP_PATH, 'lambda');
 
   // THEN
-  expect(asset1.assetPath).toEqual(asset2.assetPath);
+  expect(fingerprint(asset1)).toEqual(fingerprint(asset2));
 });
 
 test('different workspaces in the same project have different assets', () => {
-  const outdir = fs.mkdtempSync(path.join(os.tmpdir(), 'pnp-test'));
-  const app = new cdk.App({
-    outdir: outdir,
+  const bundler = new YarnWorkspaceBundler({
+    workDirectory,
   });
-  const stack = new cdk.Stack(app, 'Stack');
 
   // WHEN
-  const asset1 = new YarnWorkspaceAsset(stack, 'Asset1', {
-    projectPath: TEST_APP_PATH,
-    workspace: 'lambda',
-  });
-  const asset2 = new YarnWorkspaceAsset(stack, 'Asset2', {
-    projectPath: TEST_APP_PATH,
-    workspace: 'lib',
-  });
+  const asset1 = bundler.bundle(TEST_APP_PATH, 'lambda');
+  const asset2 = bundler.bundle(TEST_APP_PATH, 'lib');
 
   // THEN
-  expect(asset1.assetPath).not.toEqual(asset2.assetPath);
+  expect(fingerprint(asset1)).not.toEqual(fingerprint(asset2));
 });

@@ -1,6 +1,11 @@
+import * as os from 'os';
+import * as path from 'path';
 import * as lambda from '@aws-cdk/aws-lambda';
+import * as s3_assets from '@aws-cdk/aws-s3-assets';
 import * as cdk from '@aws-cdk/core';
-import { YarnWorkspaceAsset } from './yarn-workspace-asset';
+import * as fs from 'fs-extra';
+import { getProjectRoot } from './pnp-util';
+import { YarnWorkspaceBundler } from './yarn-workspace-bundler';
 
 /** @internal */
 export interface YarnWorkspaceCodeOptions {
@@ -11,21 +16,29 @@ export interface YarnWorkspaceCodeOptions {
 /** @internal */
 export class YarnWorkspaceCode extends lambda.Code {
   readonly isInline = false;
-  private readonly projectPath: string;
-  private readonly workspace: string;
-  private asset?: YarnWorkspaceAsset;
+  private readonly assetDir: string;
+  private asset?: s3_assets.Asset;
 
   constructor(options: YarnWorkspaceCodeOptions) {
     super();
 
-    this.projectPath = options.projectPath;
-    this.workspace = options.workspace;
+    const projectRoot = getProjectRoot(options.projectPath);
+    const workspace = options.workspace;
+
+    if (!fs.existsSync(path.join(projectRoot, 'yarn.lock'))) {
+      throw new Error(`The given project root ${projectRoot} does not contain a yarn.lock!`);
+    }
+
+    const yarnWorkspaceLocalBundling = new YarnWorkspaceBundler({
+      workDirectory: path.join(os.tmpdir(), '.pnp'),
+    });
+
+    this.assetDir = yarnWorkspaceLocalBundling.bundle(projectRoot, workspace);
   }
 
   bind(scope: cdk.Construct): lambda.CodeConfig {
-    const asset = new YarnWorkspaceAsset(scope, 'Asset', {
-      workspace: this.workspace,
-      projectPath: this.projectPath,
+    const asset = new s3_assets.Asset(scope, 'Asset', {
+      path: this.assetDir,
     });
 
     this.asset = asset;

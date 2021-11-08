@@ -1,7 +1,8 @@
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2';
 import * as apigatewayv2_integrations from '@aws-cdk/aws-apigatewayv2-integrations';
+import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
-import { YarnWorkspaceFunction } from '../src';
+import { PnpCode } from '../src';
 import { buildTestApp, TEST_APP_PATH } from '../src/test-app';
 
 export class IntegYarnWorkspace2Fn extends cdk.Stack {
@@ -13,13 +14,15 @@ export class IntegYarnWorkspace2Fn extends cdk.Stack {
     const optionalYarnProjectDir = TEST_APP_PATH;
 
     // ::SNIP
-    const defaultHandler = new YarnWorkspaceFunction(scope, 'Handler', {
-      // Specify the yarn workspace package name
-      workspace: 'lambda',
-      // Specify the workspace-relative file containing the lambda handler
-      handler: 'dist/api.handler',
-      // Optionally specify where to find the yarn project
-      projectPath: optionalYarnProjectDir,
+    const code = PnpCode.fromYarnWorkspace(optionalYarnProjectDir, 'lambda');
+
+    const defaultHandler = new lambda.Function(scope, 'Handler', {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code,
+      handler: 'packages/lambda/dist/api.handler',
+      environment: {
+        NODE_OPTIONS: '--require ./.pnp.cjs',
+      },
     });
 
     // Use your function in an API, for example
@@ -29,13 +32,13 @@ export class IntegYarnWorkspace2Fn extends cdk.Stack {
       }),
     });
 
-    const handler2 = new YarnWorkspaceFunction(scope, 'Handler2', {
-      // Specify the yarn workspace package name
-      workspace: 'lambda',
-      // Specify the workspace-relative file containing the lambda handler
-      handler: 'dist/api2.handler',
-      // Optionally specify where to find the yarn project
-      projectPath: optionalYarnProjectDir,
+    const handler2 = new lambda.Function(scope, 'Handler2', {
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code,
+      handler: 'packages/lambda/dist/api2.handler',
+      environment: {
+        NODE_OPTIONS: '--require ./.pnp.cjs',
+      },
     });
 
     httpApi.addRoutes({

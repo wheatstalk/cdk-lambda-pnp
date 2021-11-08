@@ -1,53 +1,19 @@
 import * as os from 'os';
 import * as path from 'path';
-import * as s3_assets from '@aws-cdk/aws-s3-assets';
-import * as cdk from '@aws-cdk/core';
 import { fingerprint } from '@aws-cdk/core/lib/fs/fingerprint';
 import * as execa from 'execa';
 import * as fs from 'fs-extra';
 import ignore from 'ignore';
-import { getProjectRoot } from './pnp-util';
 import { StopWatch } from './stop-watch';
 import { WalkingIgnore } from './walking-ignore';
 
 /** @internal */
-export interface YarnWorkspaceAssetProps {
-  readonly projectPath: string;
-  readonly workspace: string;
-}
-
-/** @internal */
-export class YarnWorkspaceAsset extends s3_assets.Asset {
-  constructor(scope: cdk.Construct, id: string, props: YarnWorkspaceAssetProps) {
-    const projectRoot = getProjectRoot(props.projectPath);
-    const workspace = props.workspace;
-
-    if (!fs.existsSync(path.join(projectRoot, 'yarn.lock'))) {
-      throw new Error(`The given project root ${projectRoot} does not contain a yarn.lock!`);
-    }
-
-    const app = cdk.App.of(scope);
-    if (!app) {
-      throw new Error('Cannot add pnp code by stage without an app');
-    }
-
-    const yarnWorkspaceLocalBundling = new YarnWorkspaceBundler({
-      workDirectory: path.join(os.tmpdir(), '.pnp'),
-    });
-
-    const assetDir = yarnWorkspaceLocalBundling.bundle(projectRoot, workspace);
-
-    super(scope, id, {
-      path: assetDir,
-    });
-  }
-}
-
-interface YarnWorkspaceBundlerOptions {
+export interface YarnWorkspaceBundlerOptions {
   readonly workDirectory: string;
 }
 
-class YarnWorkspaceBundler {
+/** @internal */
+export class YarnWorkspaceBundler {
   private readonly workDirectory: string;
 
   constructor(options: YarnWorkspaceBundlerOptions) {
@@ -157,7 +123,6 @@ const YARN_DEP_PATTERNS = [
   '/package.json',
   '**/package.json',
 ];
-
 const YARN_CDK_DEP_PATTERNS = [
   ...YARN_DEP_PATTERNS,
   '!**/cdk.out',
