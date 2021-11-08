@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import type {Ignore} from 'ignore';
+import type { Ignore } from 'ignore';
 
 /** @internal */
 export class WalkingIgnore {

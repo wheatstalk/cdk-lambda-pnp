@@ -1,11 +1,11 @@
 import * as os from 'os';
 import * as path from 'path';
-import {fingerprint} from '@aws-cdk/core/lib/fs/fingerprint';
+import { fingerprint } from '@aws-cdk/core/lib/fs/fingerprint';
 import * as execa from 'execa';
 import * as fs from 'fs-extra';
 import ignore from 'ignore';
-import {StopWatch} from './stop-watch';
-import {WalkingIgnore} from './walking-ignore';
+import { StopWatch } from './stop-watch';
+import { WalkingIgnore } from './walking-ignore';
 
 /** @internal */
 export interface YarnWorkspaceBundlerOptions {
