@@ -23,6 +23,14 @@ export class WalkingIgnore {
       }
     }
 
+    // Always allow the project root
+    if (relativePath === '') {
+      return {
+        ignored: false,
+        unignored: false,
+      };
+    }
+
     const testResult = this.ig.test(relativePath);
 
     return {
@@ -35,23 +43,29 @@ export class WalkingIgnore {
 
   private loadNpmIgnore(relativePath: string, npmIgnorePath: string) {
     const posixRelativePath = relativePath.split(path.sep).join(path.posix.sep);
-    const lines = fs.readFileSync(npmIgnorePath).toString()
+    const ignoreLines = fs.readFileSync(npmIgnorePath).toString()
       .split(/\r?\n/)
       .map(line => line.trim())
-      .filter(line => line !== '' && line[0] !== '#')
-      .map(line => {
-        const not = line[0] === '!';
-        const restOfLine = not ? line.substr(1) : line;
+      .filter(line => line !== '' && line[0] !== '#');
 
-        const scopedRule = restOfLine[0] === '/'
-          ? `/${posixRelativePath}${restOfLine}`
-          : `/${posixRelativePath}/**/${restOfLine}`;
-
-        return not
-          ? '!' + scopedRule
-          : scopedRule;
-      });
+    const lines = posixRelativePath === ''
+      ? ignoreLines
+      : ignoreLines
+        .map(mapRelativePath);
 
     this.ig.add(lines);
+
+    function mapRelativePath(line: string) {
+      const not = line[0] === '!';
+      const restOfLine = not ? line.substr(1) : line;
+
+      const scopedRule = restOfLine[0] === '/'
+        ? `/${posixRelativePath}${restOfLine}`
+        : `/${posixRelativePath}/**/${restOfLine}`;
+
+      return not
+        ? '!' + scopedRule
+        : scopedRule;
+    }
   }
 }

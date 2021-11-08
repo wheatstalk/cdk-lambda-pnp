@@ -43,9 +43,6 @@ export class YarnWorkspaceBundler {
     fs.copySync(projectRoot, assetDir, {
       recursive: true,
       filter: (src) => {
-        if (src === projectRoot) {
-          return true;
-        }
         return !walkingIgnore.test(src).ignored;
       },
     });

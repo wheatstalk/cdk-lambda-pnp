@@ -28,6 +28,7 @@ test('creating a yarn workspace asset', () => {
   });
   expect(res.sort()).toEqual([
     '.gitignore',
+    '.npmignore',
     '.pnp.cjs',
     '.yarn/cache/.gitignore',
     '.yarn/cache/uglify-js-npm-3.14.2-a003e21395-4d8e5c63b2.zip',
