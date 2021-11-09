@@ -18,6 +18,8 @@ const project = new pj.AwsCdkConstructLibrary({
     'yarn.build',
   ],
 
+  gitpod: true,
+
   releaseEveryCommit: true,
   releaseToNpm: true,
   npmAccess: pj.NpmAccess.PUBLIC,
@@ -102,5 +104,11 @@ macros.exec('shx mv README.md README.md.bak');
 macros.exec('shx cat README.md.bak | markmac > README.md');
 macros.exec('shx rm README.md.bak');
 project.postCompileTask.spawn(macros);
+
+project.gitpod.addCustomTask({
+  name: 'setup',
+  init: 'yarn install',
+  command: 'yarn build',
+});
 
 project.synth();
