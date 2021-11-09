@@ -1,4 +1,4 @@
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/wheatstalk/cdk-lambda-pnp/build)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/wheatstalk/cdk-lambda-pnp/release)
 [![npm](https://img.shields.io/npm/v/@wheatstalk/cdk-lambda-pnp)](https://www.npmjs.com/package/@wheatstalk/cdk-lambda-pnp)
 [![construct hub link](https://img.shields.io/badge/link-construct%20hub-blue)](https://constructs.dev/packages/@wheatstalk/cdk-lambda-pnp)
 
