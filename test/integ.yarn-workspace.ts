@@ -2,7 +2,7 @@ import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2';
 import * as apigatewayv2_integrations from '@aws-cdk/aws-apigatewayv2-integrations';
 import * as cdk from '@aws-cdk/core';
 import { YarnWorkspaceFunction } from '../src';
-import { buildTestApp, TEST_APP_PATH } from '../src/test-app';
+import { TEST_APP_PATH } from '../src/test-app';
 
 export class IntegYarnWorkspace extends cdk.Stack {
   constructor(scope_: cdk.Construct, id: string, props: cdk.StackProps = {}) {
@@ -37,8 +37,6 @@ export class IntegYarnWorkspace extends cdk.Stack {
 }
 
 if (require.main === module) {
-  buildTestApp();
-
   const app = new cdk.App();
   new IntegYarnWorkspace(app, 'integ-cdk-lambda-yarn-workspace');
 }

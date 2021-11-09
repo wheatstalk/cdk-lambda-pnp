@@ -3,7 +3,7 @@ import * as apigatewayv2_integrations from '@aws-cdk/aws-apigatewayv2-integratio
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cdk from '@aws-cdk/core';
 import { PnpCode } from '../src';
-import { buildTestApp, TEST_APP_PATH } from '../src/test-app';
+import { TEST_APP_PATH } from '../src/test-app';
 
 export class IntegYarnWorkspace2Fn extends cdk.Stack {
   constructor(scope_: cdk.Construct, id: string, props: cdk.StackProps = {}) {
@@ -56,8 +56,6 @@ export class IntegYarnWorkspace2Fn extends cdk.Stack {
 }
 
 if (require.main === module) {
-  buildTestApp();
-
   const app = new cdk.App();
   new IntegYarnWorkspace2Fn(app, 'integ-cdk-lambda-yarn-workspace-2fn');
 }

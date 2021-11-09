@@ -3,14 +3,10 @@ import * as path from 'path';
 import { fingerprint } from '@aws-cdk/core/lib/fs/fingerprint';
 import * as execa from 'execa';
 import * as glob from 'glob';
-import { buildTestApp, TEST_APP_PATH } from '../src/test-app';
+import { TEST_APP_PATH } from '../src/test-app';
 import { YarnWorkspaceBundler } from '../src/yarn-workspace-bundler';
 
 const workDirectory = path.join(os.tmpdir(), '.pnp');
-
-beforeAll(() => {
-  buildTestApp();
-});
 
 test('creating a yarn workspace asset', () => {
   const bundler = new YarnWorkspaceBundler({
