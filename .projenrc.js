@@ -90,10 +90,17 @@ project.package.setScript('integ:yarn-build', 'cdk --app "ts-node -P tsconfig.de
 project.package.setScript('integ:yarn-workspace', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.yarn-workspace.ts"');
 project.package.setScript('integ:yarn-workspace-2fn', 'cdk --app "ts-node -P tsconfig.dev.json test/integ.yarn-workspace-2fn.ts"');
 
+const buildTestApp = project.addTask('build-test-app', {
+  cwd: 'test-app',
+});
+buildTestApp.exec('yarn install');
+buildTestApp.exec('yarn build');
+project.preCompileTask.spawn(buildTestApp);
+
 const macros = project.addTask('readme-macros');
 macros.exec('shx mv README.md README.md.bak');
 macros.exec('shx cat README.md.bak | markmac > README.md');
 macros.exec('shx rm README.md.bak');
-project.buildTask.spawn(macros);
+project.postCompileTask.spawn(macros);
 
 project.synth();
